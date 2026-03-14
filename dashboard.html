@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TrustFlow AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="app-sidebar">
+            <div>
+                <div class="sidebar-head">
+                    <div class="brand-lockup">
+                        <span class="brand-glyph" aria-hidden="true">
+                            <span class="square"></span>
+                            <span class="circle"></span>
+                            <span class="triangle"></span>
+                        </span>
+                        <div>
+                            <div class="brand-wordmark">TrustFlow AI</div>
+                            <p>Premium trust workspace</p>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a class="sidebar-link active" href="dashboard.html">
+                        <span>
+                            <strong>Dashboard</strong>
+                            <small>Live project command</small>
+                        </span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                    <a class="sidebar-link" href="project-create.html">
+                        <span>
+                            <strong>Create Project</strong>
+                            <small>Scope and milestone design</small>
+                        </span>
+                        <span class="nav-badge">AI</span>
+                    </a>
+                    <a class="sidebar-link" href="project-room.html">
+                        <span>
+                            <strong>Project Room</strong>
+                            <small>Delivery and approvals</small>
+                        </span>
+                        <span class="nav-badge">03</span>
+                    </a>
+                    <a class="sidebar-link" href="trust-wallet.html">
+                        <span>
+                            <strong>Trust Wallet</strong>
+                            <small>Escrow protection</small>
+                        </span>
+                        <span class="nav-badge">$</span>
+                    </a>
+                    <a class="sidebar-link" href="video-verification.html">
+                        <span>
+                            <strong>Verification</strong>
+                            <small>Identity and liveness</small>
+                        </span>
+                        <span class="nav-badge">04</span>
+                    </a>
+                    <a class="sidebar-link" href="skill-test.html">
+                        <span>
+                            <strong>Skill Test</strong>
+                            <small>Capability confidence</small>
+                        </span>
+                        <span class="nav-badge">96</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-card">
+                <div class="eyebrow">Today</div>
+                <h3>Trust mode active</h3>
+                <p>Every release still requires milestone proof, client confirmation, and escrow state approval.</p>
+            </div>
+        </aside>
+
+        <main class="app-main">
+            <header class="app-topbar">
+                <div class="app-title">
+                    <span id="dashboardDate">Saturday, March 14, 2026</span>
+                    <h1 id="dashboardHeading">Dashboard</h1>
+                </div>
+
+                <div class="toolbar">
+                    <label class="search-shell">
+                        <input class="search-input" type="text" placeholder="Search projects, payouts, approvals">
+                    </label>
+                    <a class="button-ghost" href="trust-wallet.html">View Wallet</a>
+                    <a class="button-dark" href="project-create.html">New Project</a>
+                </div>
+            </header>
+
+            <section class="app-hero">
+                <div>
+                    <div class="eyebrow">Daily Focus</div>
+                    <h3 class="section-title">Protect releases and keep delivery moving.</h3>
+                    <p class="hero-lead">
+                        Three milestone approvals are ready today, one project needs revision review, and escrow is
+                        healthy across every active engagement.
+                    </p>
+
+                    <div class="hero-actions start">
+                        <a class="button-dark" href="video-verification.html">Run Verification</a>
+                        <a class="button-ghost" href="project-room.html">Open Project Room</a>
+                    </div>
+                </div>
+
+                <div class="hero-side-grid">
+                    <div class="hero-stat-box">
+                        <span class="panel-label">Trust score</span>
+                        <strong id="dashboardTrustScore">84</strong>
+                        <p id="dashboardTrustScoreText">Up 6 points this week after faster approvals and two dispute-free releases.</p>
+                    </div>
+                    <div class="hero-side-card">
+                        <span class="panel-label">Milestones accepted</span>
+                        <strong id="dashboardMilestoneAcceptance">91%</strong>
+                        <p id="dashboardMilestoneAcceptanceText">Most deliveries clear review without requiring any rework.</p>
+                    </div>
+                    <div class="hero-side-card">
+                        <span class="panel-label">Average response time</span>
+                        <strong id="dashboardResponseTime">2.1h</strong>
+                        <p id="dashboardResponseTimeText">Clients are approving quickly enough to keep cash flow healthy.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="kpi-grid">
+                <article class="kpi-card">
+                    <span>Active Projects</span>
+                    <strong id="metricActiveProjects">12</strong>
+                    <p id="metricActiveProjectsText">Eight are on track, three are in review, and one requires intervention.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Milestones This Week</span>
+                    <strong id="metricMilestonesWeek">08</strong>
+                    <p id="metricMilestonesWeekText">Five verified, two awaiting sign-off, one blocked by revision notes.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Escrow Protected</span>
+                    <strong id="metricEscrowProtected">$24.5K</strong>
+                    <p id="metricEscrowProtectedText">Live balances across current contracts and staged release schedules.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Risk Alerts</span>
+                    <strong id="metricRiskAlerts">01</strong>
+                    <p id="metricRiskAlertsText">Only one project is currently outside normal confidence thresholds.</p>
+                </article>
+            </section>
+
+            <section class="prediction-center">
+                <div class="prediction-center-head">
+                    <div class="eyebrow">AI Trust Prediction</div>
+                    <h3 class="section-title">System predicts project risk before failure.</h3>
+                    <p>
+                        TrustFlow scores delivery risk, delay probability, and dispute likelihood from live wallet,
+                        behavior, milestone, and capability signals instead of waiting for a bad outcome.
+                    </p>
+                </div>
+
+                <div class="prediction-grid">
+                    <article class="prediction-card">
+                        <span class="panel-label">Project risk</span>
+                        <strong id="predictionRiskValue">28%</strong>
+                        <div class="prediction-track">
+                            <span id="predictionRiskFill" style="width: 28%;"></span>
+                        </div>
+                        <p class="prediction-caption" id="predictionNarrative">
+                            Current project risk is controlled, but behavior and early-stage execution signals still
+                            require monitoring.
+                        </p>
+                        <div class="prediction-chip-row">
+                            <span class="prediction-chip" id="predictionMonitorChip">Behavior monitored</span>
+                            <span class="prediction-chip" id="predictionEscrowChip">Escrow protected</span>
+                            <span class="prediction-chip" id="predictionPFIChip">PFI live</span>
+                        </div>
+                    </article>
+
+                    <div class="prediction-insight-grid">
+                        <article class="prediction-insight-card">
+                            <span class="panel-label">Delivery delay probability</span>
+                            <strong id="predictionDelayValue">18%</strong>
+                            <p id="predictionDelayText">Milestone proof and response speed indicate low delay probability right now.</p>
+                        </article>
+                        <article class="prediction-insight-card">
+                            <span class="panel-label">Dispute risk</span>
+                            <strong id="predictionDisputeValue">12%</strong>
+                            <p id="predictionDisputeText">Escrow control and clear proof trails are keeping dispute exposure minimal.</p>
+                        </article>
+                        <article class="prediction-insight-card">
+                            <span class="panel-label">Trust stability</span>
+                            <strong id="predictionTrustSignal">High</strong>
+                            <p id="predictionTrustSignalText">Recent wallet, skill, and verification data support a stable trust state.</p>
+                        </article>
+                        <article class="prediction-insight-card">
+                            <span class="panel-label">Recommended action</span>
+                            <strong id="predictionAction">Monitor</strong>
+                            <p id="predictionActionText">Continue milestone verification and keep escrow routing active.</p>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="content-grid compact-grid">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Explainable AI</div>
+                                <p>Exactly why the prediction engine produced this risk posture.</p>
+                            </div>
+                            <span class="pill-muted" id="predictionFormulaBadge">Formula live</span>
+                        </div>
+
+                        <div class="factor-list" id="predictionFactorList"></div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">AI Decision Log</div>
+                                <p>Judge-facing explanation of the latest prediction steps.</p>
+                            </div>
+                        </div>
+
+                        <div class="audit-log-list" id="predictionAuditList"></div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="content-grid">
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Live Projects</div>
+                                <p>Milestones, payout readiness, and delivery confidence at a glance.</p>
+                            </div>
+                            <span class="pill-muted">Updated 5 min ago</span>
+                        </div>
+
+                        <div class="feature-list" id="dashboardProjectsList"></div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Trust Timeline</div>
+                                <p>Skill checks, delivery proof, approvals, behavior, and escrow in one feed.</p>
+                            </div>
+                            <span class="pill-muted">Today</span>
+                        </div>
+
+                        <div class="timeline-list" id="dashboardTimelineList"></div>
+                    </article>
+                </div>
+
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Escrow Movement</div>
+                                <p>Wallet state and release readiness.</p>
+                            </div>
+                            <span class="status-pill success">Healthy</span>
+                        </div>
+
+                        <div class="vault-balance">
+                            <span>Total protected balance</span>
+                            <strong id="walletProtectedTotal">$24,500</strong>
+                            <p id="walletProtectedText">Funds currently staged across live client engagements.</p>
+                        </div>
+
+                        <div class="transaction-list spaced" id="dashboardWalletList"></div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Recent Activity</div>
+                                <p>Last 24 hours across payout, review, and delivery.</p>
+                            </div>
+                        </div>
+
+                        <div class="activity-list" id="dashboardActivityList"></div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Quick Actions</div>
+                                <p>Open the highest-value flows immediately.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-list">
+                            <a class="project-card" href="project-create.html">
+                                <h4>Create a scoped project</h4>
+                                <p>Generate milestones and secure the budget structure.</p>
+                            </a>
+                            <a class="project-card" href="video-verification.html">
+                                <h4>Launch identity check</h4>
+                                <p>Validate freelancer presence and work proof on demand.</p>
+                            </a>
+                            <a class="project-card" href="skill-test.html">
+                                <h4>Review skill confidence</h4>
+                                <p>Inspect capability scoring before assignment.</p>
+                            </a>
+                            <a class="project-card" href="freelancer-profile.html">
+                                <h4>Open freelancer trust profile</h4>
+                                <p>Show Trust Score, PFI, behavior rating, and trust activity in one page.</p>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <footer class="app-footer">
+                <div>
+                    <strong>TrustFlow AI</strong>
+                    <p>AI-powered freelance trust infrastructure with live project tracking, verification, and protected payout logic.</p>
+                </div>
+                <div class="app-footer-links">
+                    <a href="project-create.html">Create Project</a>
+                    <a href="project-room.html">Project Room</a>
+                    <a href="video-verification.html">Verification</a>
+                    <a href="trust-wallet.html">Trust Wallet</a>
+                    <a href="freelancer-profile.html">Freelancer Profile</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui-shell.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

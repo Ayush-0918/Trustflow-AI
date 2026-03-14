@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Verification - TrustFlow AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="app-sidebar">
+            <div>
+                <div class="sidebar-head">
+                    <div class="brand-lockup">
+                        <span class="brand-glyph" aria-hidden="true">
+                            <span class="square"></span>
+                            <span class="circle"></span>
+                            <span class="triangle"></span>
+                        </span>
+                        <div>
+                            <div class="brand-wordmark">TrustFlow AI</div>
+                            <p>Autonomous AI intermediary</p>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a class="sidebar-link" href="dashboard.html">
+                        <span><strong>Dashboard</strong><small>Live project command</small></span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                    <a class="sidebar-link" href="project-create.html">
+                        <span><strong>Create Project</strong><small>Requirement analysis</small></span>
+                        <span class="nav-badge">AI</span>
+                    </a>
+                    <a class="sidebar-link" href="project-room.html">
+                        <span><strong>Project Room</strong><small>Automated QA workflow</small></span>
+                        <span class="nav-badge">03</span>
+                    </a>
+                    <a class="sidebar-link" href="trust-wallet.html">
+                        <span><strong>Trust Wallet</strong><small>PFI and escrow</small></span>
+                        <span class="nav-badge">$</span>
+                    </a>
+                    <a class="sidebar-link active" href="video-verification.html">
+                        <span><strong>Video Verification</strong><small>Behavioral trust scan</small></span>
+                        <span class="nav-badge">AI</span>
+                    </a>
+                    <a class="sidebar-link" href="skill-test.html">
+                        <span><strong>Skill Test</strong><small>Micro validation</small></span>
+                        <span class="nav-badge">96</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-card">
+                <div class="eyebrow">Hackathon Edge</div>
+                <h3>AI lie detection during video calls</h3>
+                <p>Voice stress, facial consistency, and commitment confidence are converted into a trust warning before payout release.</p>
+            </div>
+        </aside>
+
+        <main class="app-main">
+            <header class="app-topbar">
+                <div class="app-title">
+                    <span>Behavioral intelligence layer</span>
+                    <h1>Video Verification</h1>
+                </div>
+
+                <div class="toolbar">
+                    <a class="button-ghost" href="dashboard.html">Back to Dashboard</a>
+                    <a class="button-ghost" href="video-call.html">Open Live Video Call</a>
+                    <a class="button-dark" href="trust-wallet.html">Open Trust Wallet</a>
+                </div>
+            </header>
+
+            <section class="app-hero">
+                <div>
+                    <div class="eyebrow">AI Lie Detection</div>
+                    <h3 class="section-title">Detect uncertainty before project trust breaks.</h3>
+                    <p class="hero-lead">
+                        TrustFlow analyzes live call behavior across voice stress, facial expressions, confidence level,
+                        and project commitment. If a participant looks suspicious, the system raises a trust warning and
+                        can hold the next release.
+                    </p>
+
+                    <div class="button-row">
+                        <button class="button-dark" id="runSuspiciousScan" type="button">Simulate Suspicious Call</button>
+                        <button class="button-ghost" id="runWarningScan" type="button">Load Warning Call</button>
+                        <button class="button-ghost" id="runHealthyScan" type="button">Load Healthy Call</button>
+                    </div>
+                </div>
+
+                <div class="hero-side-grid">
+                    <div class="hero-side-card">
+                        <span class="panel-label">Current participant</span>
+                        <strong id="callParticipant">Karan Mehta</strong>
+                        <p id="callProject">Freelancer on E-commerce Platform milestone review.</p>
+                    </div>
+                    <div class="hero-side-card">
+                        <span class="panel-label">Trust verdict</span>
+                        <strong id="trustRiskCardValue">Elevated</strong>
+                        <p id="trustRiskSummary">System detected hesitation around timeline commitment and delivery confidence.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="app-callout">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Judge Mode Scenarios</div>
+                        <p>Switch instantly between safe, warning, and risk to make the demo predictable on stage.</p>
+                    </div>
+                    <span class="status-pill warning" id="judgeModeStatus">Risk demo</span>
+                </div>
+
+                <div class="scenario-switch-grid">
+                    <button class="scenario-card active" id="judgeScenarioRisk" type="button" data-scenario="suspicious">
+                        <span class="panel-label">Risk</span>
+                        <strong>Escrow Hold</strong>
+                        <p>Shows commitment hesitation, voice stress, and a strong warning.</p>
+                    </button>
+                    <button class="scenario-card" id="judgeScenarioWarning" type="button" data-scenario="warning">
+                        <span class="panel-label">Warning</span>
+                        <strong>Review Needed</strong>
+                        <p>Shows mixed signals and a partial trust review posture.</p>
+                    </button>
+                    <button class="scenario-card" id="judgeScenarioSafe" type="button" data-scenario="healthy">
+                        <span class="panel-label">Safe</span>
+                        <strong>Release Ready</strong>
+                        <p>Shows stable behavior and a low-friction escrow path.</p>
+                    </button>
+                </div>
+            </section>
+
+            <section class="kpi-grid">
+                <article class="kpi-card">
+                    <span>Voice Stress</span>
+                    <strong id="voiceStressCardValue">71%</strong>
+                    <p>Stress spike detected when scope lock and deadline certainty were discussed.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Facial Consistency</span>
+                    <strong id="facialCardValue">54%</strong>
+                    <p>Expression mismatch suggests low confidence during commitment answers.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Confidence Level</span>
+                    <strong id="confidenceCardValue">46%</strong>
+                    <p>Delivery confidence remained unstable across repeated project questions.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Commitment Signal</span>
+                    <strong id="commitmentCardValue">41%</strong>
+                    <p>AI found uncertainty in responses about milestone ownership and deadlines.</p>
+                </article>
+            </section>
+
+            <section class="content-grid">
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Live Behavioral Scan</div>
+                                <p>Simulated call output from the AI behavioral analysis engine.</p>
+                            </div>
+                            <span class="status-pill warning" id="callState">Warning active</span>
+                        </div>
+
+                        <div class="camera-preview">
+                            <div class="ring" id="callStage">Scanning live trust signals</div>
+                        </div>
+
+                        <div class="alert-banner danger spaced" id="warningBanner">
+                            <h4 id="warningTitle">AI detected uncertainty in project commitment.</h4>
+                            <p id="warningMessage">
+                                Recommendation: keep escrow locked and request a milestone-level reaffirmation before the next release.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Signal Breakdown</div>
+                                <p>Each behavioral factor contributes to the trust verdict.</p>
+                            </div>
+                        </div>
+
+                        <div class="signal-stack">
+                            <div class="signal-row">
+                                <header>
+                                    <strong>Voice stress</strong>
+                                    <span class="pill-muted" id="voiceStressValue">71%</span>
+                                </header>
+                                <div class="bar-track"><span class="bar-fill danger" id="voiceStressFill"></span></div>
+                            </div>
+
+                            <div class="signal-row">
+                                <header>
+                                    <strong>Facial consistency</strong>
+                                    <span class="pill-muted" id="facialValue">54%</span>
+                                </header>
+                                <div class="bar-track"><span class="bar-fill warning" id="facialFill"></span></div>
+                            </div>
+
+                            <div class="signal-row">
+                                <header>
+                                    <strong>Confidence level</strong>
+                                    <span class="pill-muted" id="confidenceValue">46%</span>
+                                </header>
+                                <div class="bar-track"><span class="bar-fill danger" id="confidenceFill"></span></div>
+                            </div>
+
+                            <div class="signal-row">
+                                <header>
+                                    <strong>Project commitment</strong>
+                                    <span class="pill-muted" id="commitmentValue">41%</span>
+                                </header>
+                                <div class="bar-track"><span class="bar-fill danger" id="commitmentFill"></span></div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">AI Explanation Layer</div>
+                                <p>What the model observed and why the system reacted.</p>
+                            </div>
+                        </div>
+
+                        <div class="analysis-grid">
+                            <div class="analysis-card">
+                                <h4>Pattern detected</h4>
+                                <span class="metric-number" id="patternScore">3</span>
+                                <p id="patternSummary">Three high-risk inconsistencies appeared during commitment questions.</p>
+                            </div>
+                            <div class="analysis-card">
+                                <h4>Escrow action</h4>
+                                <span class="metric-number" id="escrowAction">Hold</span>
+                                <p id="escrowSummary">The next micro-payout remains locked until the participant reconfirms scope and deadline.</p>
+                            </div>
+                        </div>
+
+                        <ul class="transcript-list spaced" id="callHighlights">
+                            <li>
+                                <strong>Commitment hesitation</strong>
+                                Delay increased when the caller was asked if the Friday deadline was realistic.
+                            </li>
+                            <li>
+                                <strong>Facial mismatch</strong>
+                                Expression confidence dropped while verbally affirming milestone ownership.
+                            </li>
+                            <li>
+                                <strong>Stress cue</strong>
+                                Voice tension rose when payment release terms were repeated.
+                            </li>
+                        </ul>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Autonomous Response</div>
+                                <p>What TrustFlow does with the behavioral verdict.</p>
+                            </div>
+                        </div>
+
+                        <ul class="check-list">
+                            <li>Show an AI trust warning directly inside the project room.</li>
+                            <li>Pause the next escrow release until commitment is reconfirmed.</li>
+                            <li>Log the call outcome into the Professional Fidelity Index.</li>
+                            <li>Escalate to manual review if repeated uncertainty appears across calls.</li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <footer class="app-footer">
+                <div>
+                    <strong>TrustFlow AI</strong>
+                    <p>Behavioral verification turns video calls into a real trust signal that can pause or unlock the next escrow release.</p>
+                </div>
+                <div class="app-footer-links">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="video-call.html">Live Call</a>
+                    <a href="trust-wallet.html">Trust Wallet</a>
+                    <a href="skill-test.html">Skill Test</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui-shell.js"></script>
+    <script src="js/video-call.js"></script>
+</body>
+
+</html>

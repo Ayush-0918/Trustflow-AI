@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - TrustFlow AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="auth-shell">
+        <header class="site-header">
+            <a class="site-brand" href="index.html">
+                <span class="brand-glyph" aria-hidden="true">
+                    <span class="square"></span>
+                    <span class="circle"></span>
+                    <span class="triangle"></span>
+                </span>
+                <span>
+                    <strong class="brand-wordmark">TrustFlow AI</strong>
+                    <span class="brand-caption">AI-powered freelance trust infrastructure</span>
+                </span>
+            </a>
+
+            <nav class="site-nav">
+                <a class="nav-pill" href="index.html#features">Platform</a>
+                <a class="nav-pill" href="index.html#projects">Projects</a>
+                <a class="nav-pill" href="index.html#workflow">Workflow</a>
+                <a class="nav-pill highlight" href="dashboard.html">Live Demo</a>
+            </nav>
+
+            <div class="site-header-utility"></div>
+
+            <div class="header-actions">
+                <a class="button-light" href="login.html">Login</a>
+                <a class="button-dark" href="project-create.html">Start a Project</a>
+            </div>
+        </header>
+
+        <div class="auth-layout">
+            <aside class="auth-aside">
+                <div>
+                    <a class="site-brand" href="index.html">
+                        <span class="brand-glyph" aria-hidden="true">
+                            <span class="square"></span>
+                            <span class="circle"></span>
+                            <span class="triangle"></span>
+                        </span>
+                        <span>
+                            <strong class="brand-wordmark">TrustFlow AI</strong>
+                            <span class="brand-caption">Premium onboarding</span>
+                        </span>
+                    </a>
+
+                    <div class="auth-hero">
+                        <div class="eyebrow">Create Account</div>
+                        <h1>Open your premium trust workspace.</h1>
+                        <p>
+                            Build a profile that carries identity confidence, role clarity, secure payment setup, and
+                            project-ready workflows from day one.
+                        </p>
+
+                        <div class="auth-proof">
+                            <div class="proof-card">
+                                <strong>AI</strong>
+                                <span>project planning built in</span>
+                            </div>
+                            <div class="proof-card">
+                                <strong>Escrow</strong>
+                                <span>secure release protection</span>
+                            </div>
+                            <div class="proof-card">
+                                <strong>Verify</strong>
+                                <span>identity and work checks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="auth-quote">
+                    "The signup flow already feels more trustworthy than most freelance marketplaces."
+                </div>
+            </aside>
+
+            <main class="auth-main">
+                <section class="auth-card">
+                    <div class="eyebrow">Join TrustFlow</div>
+                    <h2>Create your account</h2>
+                    <p>Start as a freelancer or employer and move directly into a polished dashboard experience.</p>
+
+                    <form class="auth-form" id="signupForm">
+                        <div class="split-fields">
+                            <div class="field">
+                                <label for="first-name">First name</label>
+                                <input id="first-name" type="text" placeholder="Jane" required>
+                            </div>
+
+                            <div class="field">
+                                <label for="last-name">Last name</label>
+                                <input id="last-name" type="text" placeholder="Smith" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="signup-email">Email address</label>
+                            <input id="signup-email" type="email" placeholder="jane@company.com" required>
+                        </div>
+
+                        <div class="split-fields">
+                            <div class="field">
+                                <label for="signup-password">Password</label>
+                                <input id="signup-password" type="password" placeholder="Create a password" required>
+                            </div>
+
+                            <div class="field">
+                                <label for="signup-confirm">Confirm password</label>
+                                <input id="signup-confirm" type="password" placeholder="Repeat password" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                                <label>I am joining as</label>
+                            <div class="segment-control">
+                                <label>
+                                    <input type="radio" name="role" value="freelancer" checked>
+                                    <span class="segment-option">Freelancer</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="role" value="employer">
+                                    <span class="segment-option">Employer</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="auth-links">
+                            <label for="terms">
+                                <input id="terms" type="checkbox" checked>
+                                I agree to secure platform terms
+                            </label>
+                            <a href="login.html">Already have an account?</a>
+                        </div>
+
+                        <p class="helper-note" id="signupStatus">Create a live demo account and the backend will issue a session immediately.</p>
+                        <button class="button-dark" type="submit">Create Premium Account</button>
+                    </form>
+                </section>
+            </main>
+        </div>
+
+        <footer class="site-footer">
+            <div class="footer-brand">
+                <a class="site-brand" href="index.html">
+                    <span class="brand-glyph" aria-hidden="true">
+                        <span class="square"></span>
+                        <span class="circle"></span>
+                        <span class="triangle"></span>
+                    </span>
+                    <span>
+                        <strong class="brand-wordmark">TrustFlow AI</strong>
+                        <span class="brand-caption">Premium onboarding</span>
+                    </span>
+                </a>
+                <p>Create a freelancer or employer account and move directly into the live backend-connected product demo.</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="project-room.html">Project Room</a>
+                <a href="trust-wallet.html">Trust Wallet</a>
+                <a href="skill-test.html">Skill Test</a>
+            </div>
+
+            <div class="footer-note">
+                <strong>Live Signup</strong>
+                <span>New accounts are stored by the backend and can immediately open the dashboard and trust flows.</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui-shell.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>

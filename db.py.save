@@ -1,0 +1,97 @@
+mport MongoClient
+from datetime import datetime
+import bcrypt
+import uuid
+from pymongo import MongoClient
+from datetime import datetime
+import bcrypt
+import uuid
+
+# ---------------------------
+# DATABASE CONNECTION
+# ---------------------------
+
+client = MongoClient("mongodb://localhost:27017/")
+db = client["trustflow_ai"]
+
+users = db["users"]
+projects = db["projects"]
+milestones = db["milestones"]
+messages = db["messages"]
+
+# indexe
+users.create_index("email", unique=True)
+projects.create_index("clientId")
+milestones.create_index("projectId")
+
+# ---------------------------
+# USER MANAGEMENT
+# ---------------------------
+
+def create_user(name, email, password, phone, role="freelancer"):
+
+    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+
+    user = {
+        "userId": str(uuid.uuid4()),
+        "name": name,
+        "email": email,
+        "password": hashed,
+        "phone": phone,
+        "role": role,
+        "trustScore": 80,
+        "createdAt": datetime.utcnow()
+    }
+
+    try:
+        result = users.insert_one(user)
+        return result.inserted_id
+
+    except:
+        return None
+
+
+def authenticate_user(email, password):
+
+    user = users.find_one({"email": email})
+
+    if not user:
+        return None
+
+    if bcrypt.checkpw(password.encode(), user["password"]):
+        return user
+
+    return None
+
+
+# ---------------------------
+# PROJECT MANAGEMENT
+# ---------------------------
+
+def create_project(title, description, clientId, budget):
+
+    projectId = str(uuid.uuid4())
+
+    project = {
+        "projectId": projectId,
+        "title": title,
+        "description": description,
+        "clientId": clientId,
+        "budget": budget,
+        "status": "active",
+        "createdAt": datetime.utcnow()
+    }
+
+    projects.insert_one(project)
+
+    return projectId
+
+
+# ---------------------------
+# MILESTONES
+# ---------------------------
+
+def create_milestone(projectId, title, amount):
+
+    milestone = {
+        "milestoneId": str(uuid.uuid4(   
