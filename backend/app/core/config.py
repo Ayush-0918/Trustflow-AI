@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     REDIS_URL: str = "redis://localhost:6379"
 
     # CORS
-    CORS_ORIGINS: List[str] = ["*"]
+    CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:3003", "https://trustflow-ai-ten.vercel.app", "https://trustflow.app"]
 
     # OpenAI
     OPENAI_API_KEY: str = ""
