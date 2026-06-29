@@ -1,221 +1,383 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/layout/AppShell";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
-import { ProjectChat } from "@/components/features/ProjectChat";
+import { WebGLBackground } from "@/components/ui/WebGLBackground";
+import { motion } from "framer-motion";
+import { FolderKanban, ShieldCheck, Clock, Zap, Cpu, Activity, User, Send, CheckCircle2, ChevronRight, MessageSquare, Loader2, AlertCircle } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { useQuery } from "@tanstack/react-query";
 import { projectsAPI } from "@/lib/api";
-import { 
-  FolderKanban, 
-  ArrowLeft,
-  Clock, 
-  CheckCircle2, 
-  AlertCircle,
-  Zap,
-  Lock,
-  Unlock,
-  ShieldCheck,
-  Activity,
-  User,
-  MessageSquare
-} from "lucide-react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { formatDistanceToNow, format } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
+import toast from "react-hot-toast";
+import { useAuthStore } from "@/store/authStore";
+import io from "socket.io-client";
 
-const STATUS_CONFIG = {
-  open:        { label: "INITIALIZED",   icon: Clock,         className: "text-cyan-400 border-cyan-400/50 bg-cyan-400/10" },
-  in_progress: { label: "PROCESSING",    icon: Zap,           className: "text-purple-400 border-purple-400/50 bg-purple-400/10" },
-  review:      { label: "VERIFYING",     icon: AlertCircle,   className: "text-pink-400 border-pink-400/50 bg-pink-400/10" },
-  completed:   { label: "EXECUTED",      icon: CheckCircle2,  className: "text-emerald-400 border-emerald-400/50 bg-emerald-400/10" },
-} as const;
+// HoloCard for 3D tilt effect
+function HoloCard({ children, className, spotlightColor }: { children: React.ReactNode, className?: string, spotlightColor?: string }) {
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
 
-export default function ContractDetailsPage() {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    setRotateX(-((y - centerY) / centerY) * 4);
+    setRotateY(((x - centerX) / centerX) * 4);
+  };
+
+  const handleMouseLeave = () => {
+    setRotateX(0);
+    setRotateY(0);
+  };
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ transformStyle: "preserve-3d" }}
+      animate={{ rotateX, rotateY }}
+      transition={{ type: "spring", stiffness: 150, damping: 20 }}
+      className={`relative group ${className || ""}`}
+    >
+       <div style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }} className="w-full h-full relative z-10">
+         <SpotlightCard spotlightColor={spotlightColor} className={`w-full h-full p-0 border-white/[0.06] bg-black/20 backdrop-blur-3xl shadow-2xl rounded-3xl group-hover:bg-black/30 group-hover:shadow-[0_0_40px_rgba(34,211,238,0.1)] transition-all duration-500 overflow-hidden ${className || ""}`}>
+           <div className="w-full h-full flex flex-col">
+             {children}
+           </div>
+         </SpotlightCard>
+       </div>
+    </motion.div>
+  );
+}
+
+gsap.registerPlugin(useGSAP);
+
+export default function ProjectDetailPage() {
   const params = useParams();
-  const id = Number(params.id);
+  const router = useRouter();
+  const idStr = params.id as string;
+  const isMock = isNaN(Number(idStr));
+  const projectId = isMock ? 0 : parseInt(idStr, 10);
+  const container = useRef<HTMLDivElement>(null);
+  
+  const { user } = useAuthStore();
+  const [chatInput, setChatInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { data: project, isLoading } = useQuery({
-    queryKey: ["project", id],
-    queryFn: () => projectsAPI.get(id).then((r) => r.data),
+  // Queries
+  const { data: project, isLoading: loadingProject } = useQuery({
+    queryKey: ["project", projectId],
+    queryFn: () => projectsAPI.get(projectId).then((r) => r.data),
+    enabled: !isMock,
   });
 
-  const { data: milestones, isLoading: milestonesLoading } = useQuery({
-    queryKey: ["project-milestones", id],
-    queryFn: () => projectsAPI.getMilestones(id).then((r) => r.data),
+  const { data: milestones, isLoading: loadingMilestones } = useQuery({
+    queryKey: ["project-milestones", projectId],
+    queryFn: () => projectsAPI.getMilestones(projectId).then((r) => r.data),
+    enabled: !isMock,
   });
 
-  if (isLoading) {
+  const { data: initialMessages, isLoading: loadingMessages, refetch: refetchMessages } = useQuery({
+    queryKey: ["project-messages", projectId],
+    queryFn: () => projectsAPI.getMessages(projectId).then((r) => r.data),
+    enabled: !isMock,
+  });
+
+  const [liveMessages, setLiveMessages] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (initialMessages) {
+      setLiveMessages(initialMessages);
+    }
+  }, [initialMessages]);
+
+  useEffect(() => {
+    if (isMock || !user) return;
+    const socketURL = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8000";
+    const socket = io(socketURL, { path: "/socket.io" });
+    
+    socket.emit("join_project", { project_id: projectId });
+
+    socket.on("new_message", (msg) => {
+      if (msg.project_id === projectId) {
+        setLiveMessages((prev) => [...prev, msg]);
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [projectId, isMock, user]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [liveMessages]);
+
+  useGSAP(() => {
+    gsap.from(".detail-card", {
+      y: 50,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.1,
+      ease: "power3.out",
+    });
+  }, { scope: container });
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim() || isMock) return;
+    const toastId = toast.loading("Encrypting transmission...");
+    try {
+      await projectsAPI.sendMessage(projectId, chatInput);
+      setChatInput("");
+      toast.success("Message sent", { id: toastId });
+    } catch (err) {
+      toast.error("Failed to send message", { id: toastId });
+    }
+  };
+
+  if (isMock) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-[50vh]">
-           <div className="animate-spin text-cyan-400"><Zap size={32} /></div>
+        <WebGLBackground />
+        <div className="flex h-full items-center justify-center p-10 relative z-10 text-center">
+          <SpotlightCard className="p-10 max-w-md w-full bg-black/40 border-cyan-500/30">
+             <AlertCircle size={48} className="text-cyan-400 mx-auto mb-4" />
+             <h2 className="text-2xl font-display font-bold text-white mb-2">Simulation Mode</h2>
+             <p className="text-gray-400 font-mono text-sm mb-6">This is a mock contract. Details are unretrievable from the live network.</p>
+             <button onClick={() => router.back()} className="px-6 py-2 bg-cyan-500/20 text-cyan-400 rounded-full font-cyber text-xs uppercase tracking-widest hover:bg-cyan-500/30">
+               Return to Grid
+             </button>
+          </SpotlightCard>
         </div>
       </AppShell>
     );
   }
 
-  // Fallback for demo purposes if backend doesn't return milestones yet
-  const displayMilestones = milestones?.length > 0 ? milestones : [
-    { id: 1, title: "System Architecture Design", amount: (project?.budget_max || 5000) * 0.3, status: "completed", updated_at: new Date(Date.now() - 86400000 * 2).toISOString() },
-    { id: 2, title: "Smart Contract Implementation", amount: (project?.budget_max || 5000) * 0.4, status: "pending", updated_at: new Date().toISOString() },
-    { id: 3, title: "Security Audit & Mainnet Deploy", amount: (project?.budget_max || 5000) * 0.3, status: "locked", updated_at: new Date().toISOString() }
-  ];
-
-  const cfg = STATUS_CONFIG[(project?.status as keyof typeof STATUS_CONFIG) || "open"];
-  const StatusIcon = cfg?.icon || Clock;
-
   return (
     <AppShell>
-      <div className="p-6 md:p-8 xl:p-10 h-full relative z-10 overflow-x-hidden">
-        <div className="max-w-5xl mx-auto space-y-8 md:space-y-10">
-          
-          {/* Header */}
-          <div className="space-y-4">
-            <Link href="/projects" className="inline-flex items-center gap-2 text-cyan-500 hover:text-cyan-300 transition-colors font-mono text-xs uppercase tracking-widest">
-              <ArrowLeft size={14} /> Return to Registry
-            </Link>
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-cyan-500/10 border border-cyan-400/30 rounded-2xl flex items-center justify-center text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-                  <FolderKanban size={24} />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-display font-black tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] uppercase">{project?.title || "Contract Detail"}</h1>
-                  <p className="text-white/50 font-mono text-sm tracking-widest mt-1">ID: {String(id).padStart(6, '0')} • {project?.created_at ? formatDistanceToNow(new Date(project.created_at), { addSuffix: true }) : "recently"}</p>
-                </div>
-              </div>
-              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border text-xs font-cyber font-bold uppercase tracking-widest ${cfg?.className}`}>
-                <StatusIcon size={14} />
-                {cfg?.label || project?.status}
-              </div>
-            </div>
+      <WebGLBackground />
+      <div ref={container} className="p-4 md:p-8 h-full relative z-10 overflow-hidden max-w-[1600px] mx-auto flex flex-col">
+        
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-6 text-white/50 text-xs font-mono uppercase tracking-widest">
+          <button onClick={() => router.back()} className="hover:text-cyan-400 transition-colors">Projects</button>
+          <ChevronRight size={12} />
+          <span className="text-cyan-400 font-bold">ID_{projectId}</span>
+        </div>
+
+        {loadingProject ? (
+          <div className="flex-1 flex items-center justify-center">
+            <Loader2 size={40} className="text-cyan-400 animate-spin" />
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-              
-              {/* Description */}
-              <SpotlightCard className="p-8 border-white/[0.06] bg-black/20 backdrop-blur-3xl shadow-2xl rounded-3xl transition-all">
-                <h3 className="font-cyber font-bold tracking-widest uppercase text-white/50 text-xs mb-4">Operational Directives</h3>
-                <p className="text-white/80 leading-relaxed font-mono text-sm">
-                  {project?.description || "No description provided for this contract."}
-                </p>
-              </SpotlightCard>
-
-              {/* Milestones Tracker */}
-              <SpotlightCard spotlightColor="rgba(34, 211, 238, 0.1)" className="p-0 overflow-hidden border-white/[0.06] bg-black/20 backdrop-blur-3xl shadow-2xl rounded-3xl transition-all">
-                <div className="px-8 py-6 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.02]">
-                  <h2 className="text-lg font-cyber font-bold tracking-widest uppercase flex items-center gap-3 text-white/80">
-                    <Activity size={18} className="text-cyan-400" /> Milestone Verification
-                  </h2>
-                </div>
-                <div className="p-8">
-                  <div className="space-y-6 relative before:absolute before:inset-0 before:ml-[1.125rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/[0.08] before:to-transparent">
-                    {displayMilestones.map((m: any, idx: number) => {
-                      const isCompleted = m.status === 'completed';
-                      const isPending = m.status === 'pending';
-                      return (
-                        <div key={m.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                          <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.06] bg-black/60 backdrop-blur-xl shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_0_4px_rgba(0,0,0,0.5)] z-10">
-                            {isCompleted ? (
-                               <div className="w-full h-full rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-400/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-                                 <CheckCircle2 size={16} />
-                               </div>
-                            ) : isPending ? (
-                               <div className="w-full h-full rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 border border-cyan-400/50 shadow-[0_0_10px_rgba(34,211,238,0.3)] animate-pulse">
-                                 <Unlock size={14} />
-                               </div>
-                            ) : (
-                               <div className="w-full h-full rounded-full bg-gray-500/10 flex items-center justify-center text-gray-500 border border-white/10">
-                                 <Lock size={14} />
-                               </div>
-                            )}
-                          </div>
-                          
-                          <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-white/[0.06] bg-black/40 backdrop-blur-md ${isCompleted ? 'border-emerald-500/30 bg-emerald-500/10' : isPending ? 'border-cyan-500/30 bg-cyan-500/10' : ''}`}>
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-bold text-white/90 font-display">{m.title}</span>
-                              <span className={`font-mono text-xs font-bold ${isCompleted ? 'text-emerald-400' : isPending ? 'text-cyan-400' : 'text-white/40'}`}>${m.amount}</span>
-                            </div>
-                            <time className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{format(new Date(m.updated_at), "MMM dd, yyyy HH:mm")}</time>
-                          </div>
-                        </div>
-                      )
-                    })}
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-140px)]">
+            
+            {/* COLUMN 1: Overview */}
+            <div className="lg:col-span-3 h-full">
+              <HoloCard className="h-full detail-card">
+                <div className="p-6 overflow-y-auto h-full custom-scrollbar">
+                  <div className="w-12 h-12 bg-cyan-500/10 border border-cyan-500/30 rounded-xl flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                    <FolderKanban size={24} className="text-cyan-400" />
                   </div>
-                </div>
-              </SpotlightCard>
-
-            </div>
-
-            <div className="space-y-6">
-              {/* Escrow Vault Status */}
-              <SpotlightCard spotlightColor="rgba(168, 85, 247, 0.15)" className="p-6 border-white/[0.06] bg-black/20 backdrop-blur-3xl shadow-2xl rounded-3xl transition-all">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-400/30 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                    <ShieldCheck size={20} />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-cyber font-bold tracking-widest uppercase text-white/90">Escrow Vault</h2>
-                    <p className="text-[10px] font-mono text-white/40 uppercase">Secured by TrustFlow</p>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-xs font-mono text-white/50 uppercase tracking-widest mb-1">Total Allocated Budget</p>
-                    <p className="text-3xl font-display font-black text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                      ${project?.budget_max || "5000"}
-                    </p>
+                  <h1 className="text-3xl font-display font-black text-white leading-tight mb-2 drop-shadow-md">{project?.title}</h1>
+                  <div className="flex items-center gap-2 mb-6">
+                    <span className="px-2 py-1 bg-white/5 border border-white/10 rounded font-cyber text-[9px] text-white uppercase tracking-widest shadow-inner">
+                      {project?.status}
+                    </span>
+                    {project?.budget_max && (
+                      <span className="px-2 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded font-cyber text-[9px] text-emerald-400 uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                        ${project.budget_min} - ${project.budget_max}
+                      </span>
+                    )}
                   </div>
                   
-                  <div className="pt-4 border-t border-white/[0.06] space-y-3">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="font-mono text-white/60">Locked in Escrow</span>
-                      <span className="font-bold text-cyan-400 flex items-center gap-1"><Lock size={12}/> ${(project?.budget_max || 5000) * 0.7}</span>
+                  <p className="text-gray-400 font-mono text-xs leading-relaxed">
+                    {project?.description || "No description provided."}
+                  </p>
+
+                  {/* Parties Involved */}
+                  <div className="mt-8 pt-6 border-t border-white/5 space-y-4">
+                    <h3 className="font-cyber text-[10px] uppercase tracking-widest text-gray-500">Nodes Involved</h3>
+                    
+                    <div className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/[0.05] rounded-xl">
+                      <div className="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/50 flex items-center justify-center text-cyan-400">
+                        <User size={14} />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-white">{project?.client?.username || "Client Node"}</p>
+                        <p className="text-[9px] font-cyber text-cyan-400 uppercase tracking-widest">Deployer</p>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="font-mono text-white/60">Released Funds</span>
-                      <span className="font-bold text-emerald-400 flex items-center gap-1"><Unlock size={12}/> ${(project?.budget_max || 5000) * 0.3}</span>
+
+                    <div className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/[0.05] rounded-xl">
+                      <div className="w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/50 flex items-center justify-center text-purple-400">
+                        <Cpu size={14} />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-white">{project?.freelancer?.username || "Awaiting Node"}</p>
+                        <p className="text-[9px] font-cyber text-purple-400 uppercase tracking-widest">Executor</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-white/5 space-y-4">
+                    <h3 className="font-cyber text-[10px] uppercase tracking-widest text-gray-500">Required Skills</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {project?.skills_required?.map((skill: string) => (
+                        <span key={skill} className="px-2 py-1 bg-purple-500/10 border border-purple-500/30 text-purple-400 font-mono text-[10px] rounded-full">
+                          {skill}
+                        </span>
+                      ))}
+                      {(!project?.skills_required || project.skills_required.length === 0) && (
+                        <span className="text-xs text-gray-500 italic">None specified</span>
+                      )}
                     </div>
                   </div>
                 </div>
-              </SpotlightCard>
-
-              {/* Security Logs Mock */}
-              <SpotlightCard spotlightColor="rgba(255, 255, 255, 0.05)" className="p-6 border-white/[0.06] bg-black/20 backdrop-blur-3xl shadow-2xl rounded-3xl transition-all">
-                 <h2 className="text-xs font-cyber font-bold tracking-widest uppercase text-white/50 mb-4">Immutable Ledger Logs</h2>
-                 <div className="space-y-4">
-                   <div className="flex gap-3">
-                     <div className="mt-1 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)] shrink-0" />
-                     <div>
-                       <p className="text-[11px] font-mono text-white/80">Funds released (Milestone 1)</p>
-                       <p className="text-[9px] font-mono text-white/40 uppercase mt-0.5">TxHash: 0x98f...2a1</p>
-                     </div>
-                   </div>
-                   <div className="flex gap-3">
-                     <div className="mt-1 w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_5px_rgba(34,211,238,0.5)] shrink-0" />
-                     <div>
-                       <p className="text-[11px] font-mono text-white/80">Contract deployed to Escrow</p>
-                       <p className="text-[9px] font-mono text-white/40 uppercase mt-0.5">TxHash: 0x33b...19c</p>
-                     </div>
-                   </div>
-                   <div className="flex gap-3">
-                     <div className="mt-1 w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_5px_rgba(168,85,247,0.5)] shrink-0" />
-                     <div>
-                       <p className="text-[11px] font-mono text-white/80">Node Identity Verified</p>
-                       <p className="text-[9px] font-mono text-white/40 uppercase mt-0.5">TrustScore Engine</p>
-                     </div>
-                   </div>
-                 </div>
-              </SpotlightCard>
-
-              {/* Real-Time WebSocket Chat */}
-              <ProjectChat projectId={id} />
-
+              </HoloCard>
             </div>
+
+            {/* COLUMN 2: Escrow / Milestones */}
+            <div className="lg:col-span-5 h-full">
+              <HoloCard spotlightColor="rgba(34, 211, 238, 0.1)" className="h-full detail-card">
+                <div className="p-6 h-full flex flex-col">
+                  <h2 className="font-display font-bold text-xl text-white uppercase tracking-widest flex items-center gap-3 mb-6">
+                    <ShieldCheck size={20} className="text-cyan-400" />
+                    Escrow Vault
+                  </h2>
+
+                  <div className="flex-1 overflow-y-auto pr-4 space-y-4 custom-scrollbar">
+                    {loadingMilestones ? (
+                      <div className="flex justify-center p-8"><Loader2 className="animate-spin text-cyan-400" /></div>
+                    ) : milestones?.length > 0 ? (
+                      milestones.map((ms: any, i: number) => (
+                        <div key={ms.id} className="p-4 bg-white/[0.02] border border-white/[0.05] rounded-xl flex gap-4 group hover:bg-white/[0.04] transition-colors relative overflow-hidden shadow-lg">
+                          {ms.status === "completed" && (
+                             <div className="absolute inset-0 bg-emerald-500/5 pointer-events-none" />
+                          )}
+                          <div className="mt-1">
+                             {ms.status === "completed" ? (
+                               <div className="relative">
+                                 <div className="absolute inset-0 bg-emerald-400 blur-md opacity-50" />
+                                 <CheckCircle2 size={18} className="text-emerald-400 relative z-10" />
+                               </div>
+                             ) : ms.status === "in_progress" ? (
+                               <Activity size={18} className="text-cyan-400 animate-pulse drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]" />
+                             ) : (
+                               <div className="w-4 h-4 rounded-full border-2 border-gray-600" />
+                             )}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-bold text-white text-sm">{ms.title}</h4>
+                            <p className="text-xs text-gray-500 font-mono mt-1">{ms.description || "No description."}</p>
+                            <div className="mt-4 flex items-center justify-between text-[10px] font-cyber uppercase tracking-widest">
+                              <span className="text-emerald-400 text-sm font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                                ${ms.amount > 0 ? ms.amount : Math.floor((project?.budget_max || 5000) / (milestones.length || 1))}
+                              </span>
+                              
+                              {/* Action Button depending on status and role */}
+                              {ms.status !== "completed" && user?.id === project?.client_id && (
+                                <button className="px-3 py-1.5 bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 rounded hover:bg-cyan-500/40 transition-colors shadow-[0_0_10px_rgba(34,211,238,0.2)]">
+                                  Release Funds
+                                </button>
+                              )}
+                              {ms.status === "completed" && (
+                                <span className="text-emerald-500 flex items-center gap-1"><CheckCircle2 size={12} /> Released</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center p-10 border border-dashed border-white/10 rounded-2xl relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.02)_50%,transparent_75%,transparent_100%)] bg-[length:250%_250%,100%_100%] group-hover:animate-[gradient_3s_linear_infinite]" />
+                        <ShieldCheck size={32} className="text-gray-600 mx-auto mb-3" />
+                        <p className="text-gray-500 font-mono text-sm">Vault empty. Awaiting cryptographic milestone deployment.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </HoloCard>
+            </div>
+
+            {/* COLUMN 3: Secure Chat */}
+            <div className="lg:col-span-4 h-full">
+              <HoloCard className="h-full detail-card">
+                <div className="p-4 border-b border-white/5 bg-white/[0.02] flex items-center justify-between shrink-0 shadow-md">
+                   <h2 className="font-cyber font-bold text-[11px] text-white uppercase tracking-widest flex items-center gap-2">
+                     <MessageSquare size={14} className="text-cyan-400" /> Secure Comms
+                   </h2>
+                   <div className="flex items-center gap-1.5 text-[9px] font-cyber uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> E2E Active
+                   </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar relative">
+                   {/* Scanning line background effect */}
+                   <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
+                     <div className="w-full h-1 bg-cyan-400/50 blur-[2px] animate-[scan_3s_linear_infinite]" />
+                   </div>
+
+                   {loadingMessages ? (
+                     <div className="flex justify-center"><Loader2 className="animate-spin text-cyan-500 mt-10" /></div>
+                   ) : liveMessages.length > 0 ? (
+                     liveMessages.map((msg: any) => {
+                       const isMe = msg.sender_id === user?.id;
+                       return (
+                         <div key={msg.id} className={`flex flex-col relative z-10 ${isMe ? "items-end" : "items-start"}`}>
+                           <span className="text-[9px] font-mono text-gray-500 mb-1 px-1 flex items-center gap-1">
+                             {isMe ? "YOU" : (msg.sender?.username || `NODE_${msg.sender_id}`)}
+                           </span>
+                           <div className={`px-4 py-2.5 rounded-2xl text-sm font-mono max-w-[85%] shadow-lg ${
+                             isMe 
+                              ? "bg-cyan-500/20 text-cyan-50 border border-cyan-500/40 rounded-br-sm shadow-[0_0_15px_rgba(34,211,238,0.15)]" 
+                              : "bg-white/[0.03] text-gray-300 border border-white/10 rounded-bl-sm"
+                           }`}>
+                             {msg.content}
+                           </div>
+                         </div>
+                       )
+                     })
+                   ) : (
+                     <div className="h-full flex flex-col items-center justify-center relative z-10">
+                       <Zap size={24} className="text-gray-600 mb-2 opacity-50" />
+                       <p className="text-gray-600 font-mono text-xs uppercase tracking-widest">Transmission channel open...</p>
+                     </div>
+                   )}
+                   <div ref={messagesEndRef} />
+                </div>
+
+                <form onSubmit={handleSendMessage} className="p-4 border-t border-white/5 bg-black/60 shrink-0 relative z-10">
+                   <div className="flex items-center gap-2">
+                     <input
+                       type="text"
+                       value={chatInput}
+                       onChange={(e) => setChatInput(e.target.value)}
+                       placeholder="Transmit encrypted payload..."
+                       className="flex-1 bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white font-mono text-xs focus:outline-none focus:border-cyan-400/50 focus:bg-cyan-500/5 transition-all shadow-inner"
+                     />
+                     <button
+                       type="submit"
+                       disabled={!chatInput.trim()}
+                       className="p-3 bg-cyan-500/20 text-cyan-400 rounded-xl hover:bg-cyan-500/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all disabled:opacity-50 disabled:hover:bg-cyan-500/20"
+                     >
+                       <Send size={16} />
+                     </button>
+                   </div>
+                </form>
+              </HoloCard>
+            </div>
+
           </div>
-        </div>
+        )}
       </div>
     </AppShell>
   );

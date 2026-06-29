@@ -142,7 +142,7 @@ Output NOTHING ELSE except the raw JSON string.""",
         result = await asyncio.to_thread(crew.kickoff)
         
         # Clean the output in case it wrapped it in ```json ... ```
-        output_str = str(result).strip()
+        output_str = result.strip() if isinstance(result, str) else str(result).strip()
         if output_str.startswith("```json"):
             output_str = output_str[7:]
         if output_str.startswith("```"):
@@ -189,7 +189,7 @@ Return ONLY valid JSON:
         from langchain_core.messages import HumanMessage
         res = await llm.ainvoke([HumanMessage(content=prompt)])
         
-        out = res.content.strip()
+        out = str(res.content).strip()
         if out.startswith("```json"): out = out[7:]
         if out.startswith("```"): out = out[3:]
         if out.endswith("```"): out = out[:-3]
@@ -210,7 +210,7 @@ Return ONLY valid JSON as an array of objects with keys: id, question, options (
     try:
         from langchain_core.messages import HumanMessage
         res = await llm.ainvoke([HumanMessage(content=prompt)])
-        out = res.content.strip()
+        out = str(res.content).strip()
         if out.startswith("```json"): out = out[7:]
         if out.startswith("```"): out = out[3:]
         if out.endswith("```"): out = out[:-3]
@@ -232,7 +232,7 @@ Return ONLY valid JSON with keys: is_authentic (bool), confidence (float), flags
     try:
         from langchain_core.messages import HumanMessage
         res = await llm.ainvoke([HumanMessage(content=prompt)])
-        out = res.content.strip()
+        out = str(res.content).strip()
         if out.startswith("```json"): out = out[7:]
         if out.startswith("```"): out = out[3:]
         if out.endswith("```"): out = out[:-3]

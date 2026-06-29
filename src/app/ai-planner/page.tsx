@@ -116,12 +116,14 @@ export default function AIPlannerPage() {
       });
       const projectId = projectRes.data.id;
 
-      // Budget is undefined here, so milestones will have 0 amount for now.
+      const budget = 5000;
+      const milestoneAmount = Math.floor(budget / blueprint.suggested_milestones.length);
+
       for (const m of blueprint.suggested_milestones) {
         await projectsAPI.createMilestone(projectId, {
           title: m.title,
           description: m.description,
-          amount: 0,
+          amount: milestoneAmount,
         });
       }
 
@@ -158,11 +160,6 @@ export default function AIPlannerPage() {
               className="w-full bg-transparent text-xl md:text-2xl font-sans font-light text-white placeholder:text-white/20 focus:outline-none resize-none min-h-[36px] overflow-hidden leading-relaxed"
               rows={1}
             />
-            {/* Keyboard Hint */}
-            <div className="absolute bottom-6 right-6 flex items-center gap-2 opacity-40 pointer-events-none hidden md:flex">
-              <span className="text-[10px] font-mono border border-white/20 rounded px-1.5 py-0.5 text-white">⌘</span>
-              <span className="text-[10px] font-mono border border-white/20 rounded px-1.5 py-0.5 text-white">Enter</span>
-            </div>
           </div>
 
           <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
@@ -197,7 +194,7 @@ export default function AIPlannerPage() {
               >
                 <div className="space-y-8">
                   {/* High Level Stats */}
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-5 rounded-2xl border border-white/5 bg-white/[0.01] flex flex-col items-center justify-center text-center shadow-sm">
                       <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">Complexity</p>
                       <p className="text-2xl font-sans font-light capitalize text-white">{blueprint.complexity}</p>

@@ -26,7 +26,7 @@ async def stripe_webhook(
     try:
         # Syncyhronous call since we changed it to `def`
         event = construct_webhook_event(payload, stripe_signature)
-    except stripe.error.SignatureVerificationError as e:
+    except stripe.error.SignatureVerificationError as e: # type: ignore
         logger.error("⚠️  Webhook signature verification failed.")
         raise HTTPException(400, "Invalid signature")
     except Exception as e:

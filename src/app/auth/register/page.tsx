@@ -154,7 +154,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2 group">
                 <label className="text-[10px] font-mono tracking-widest text-gray-500 uppercase group-focus-within:text-purple-400 transition-colors">
                   Real Name

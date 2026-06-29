@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Cpu, ShieldCheck, Activity, TerminalSquare, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { useAudio } from "@/lib/AudioProvider";
-import { useSignMessage } from "wagmi";
 
 gsap.registerPlugin(useGSAP);
 
@@ -39,7 +39,6 @@ export function DeployTerminalOverlay({
   const containerRef = useRef<HTMLDivElement>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
   const { playBoot, playSuccess, playClick } = useAudio();
-  const { signMessageAsync } = useSignMessage();
 
   useEffect(() => {
     if (isOpen) {
@@ -65,17 +64,14 @@ export function DeployTerminalOverlay({
             setStep(currentStep + 1);
             setIsWaitingForSignature(true);
             
-            try {
-              // Trigger MetaMask / Wallet signature
-              await signMessageAsync({ message: "Sign this message to authorize the TrustFlow Smart Contract Deployment." });
+            // Mock signature approval for seamless demo
+            setTimeout(() => {
               setIsWaitingForSignature(false);
               currentStep++;
               // Resume sequence
               interval = setInterval(runStep, 800);
-            } catch (err) {
-              setLogs(prev => [...prev, "ERROR: SIGNATURE REJECTED. DEPLOYMENT ABORTED."]);
-              setIsWaitingForSignature(false);
-            }
+            }, 2500);
+            
             return;
           }
 
@@ -100,7 +96,7 @@ export function DeployTerminalOverlay({
         document.body.style.overflow = "";
       };
     }
-  }, [isOpen, onComplete, signMessageAsync]);
+  }, [isOpen, onComplete]);
 
 
   useEffect(() => {
@@ -127,7 +123,10 @@ export function DeployTerminalOverlay({
     }
   }, { scope: containerRef, dependencies: [isOpen] });
 
-  return (
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const content = (
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -135,7 +134,7 @@ export function DeployTerminalOverlay({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-xl"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-xl"
         >
           {/* Cybernetic Grid Background */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
@@ -159,7 +158,7 @@ export function DeployTerminalOverlay({
               </div>
               <button 
                 onClick={onClose}
-                className="text-cyan-400/50 hover:text-cyan-400 transition-colors font-mono text-xs uppercase tracking-widest"
+                className="text-cyan-400/50 hover:text-cyan-400 transition-colors font-mono text-xs uppercase tracking-widest z-50"
               >
                 [ ABORT ]
               </button>
@@ -248,4 +247,7 @@ export function DeployTerminalOverlay({
       )}
     </AnimatePresence>
   );
+
+  if (!mounted) return null;
+  return createPortal(content, document.body);
 }

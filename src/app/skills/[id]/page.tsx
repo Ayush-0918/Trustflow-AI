@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { WebGLBackground } from "@/components/ui/WebGLBackground";
+import { skillsAPI } from "@/lib/api";
 
 const MOCK_QUESTIONS = [
   { question: "Which of the following is true about PostgreSQL indexes?", options: ["B-Tree indexes are best for exact match and range queries.", "Hash indexes support range queries natively.", "GIN indexes are faster for simple equality checks than B-Tree.", "Indexes always speed up write operations."], answer: 0 },
@@ -40,20 +41,54 @@ export default function AssessmentPage() {
   const [phase, setPhase] = useState<"intro" | "calibrating" | "test" | "evaluating" | "complete">("intro");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  
+  const [questions, setQuestions] = useState<any[]>(MOCK_QUESTIONS);
+  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [resultData, setResultData] = useState<any>(null);
 
-  const startCalibration = () => {
+  const startCalibration = async () => {
     setPhase("calibrating");
-    setTimeout(() => setPhase("test"), 3500);
+    try {
+      const res = await skillsAPI.getQuestions(skillId);
+      if (res.data?.questions && res.data.questions.length > 0) {
+        setQuestions(res.data.questions);
+      } else {
+        setQuestions(MOCK_QUESTIONS);
+      }
+    } catch (err) {
+      console.error("AI Error, falling back to mocks", err);
+      setQuestions(MOCK_QUESTIONS);
+    }
+    setPhase("test");
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (selectedOption === null) return;
-    if (currentQuestion < MOCK_QUESTIONS.length - 1) {
+    
+    // Save answer
+    const qId = questions[currentQuestion]?.id || `q${currentQuestion}`;
+    const newAnswers = { ...answers, [qId]: selectedOption };
+    setAnswers(newAnswers);
+
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
       setSelectedOption(null);
     } else {
       setPhase("evaluating");
-      setTimeout(() => setPhase("complete"), 3000);
+      try {
+        const res = await skillsAPI.submitTest({
+          skill_name: skillId,
+          answers: newAnswers,
+        });
+        setResultData(res.data);
+      } catch (err) {
+        console.error("Submit error", err);
+        setResultData({
+          percentage: 0,
+          passed: false,
+        });
+      }
+      setTimeout(() => setPhase("complete"), 1500);
     }
   };
 
@@ -136,7 +171,7 @@ export default function AssessmentPage() {
                 <motion.div key="test" variants={phaseVariants} initial="initial" animate="animate" exit="exit" className="absolute inset-0">
                   <SpotlightCard className="h-full flex flex-col border-white/10 bg-white/[0.02] p-6 overflow-hidden">
                      <div className="flex items-center justify-between mb-6 pb-6 border-b border-white/5">
-                        <span className="font-cyber font-bold tracking-widest uppercase text-gray-500 text-xs">Question {currentQuestion + 1} of {MOCK_QUESTIONS.length}</span>
+                        <span className="font-cyber font-bold tracking-widest uppercase text-gray-500 text-xs">Question {currentQuestion + 1} of {questions.length}</span>
                      </div>
                      <AnimatePresence mode="wait">
                        <motion.div 
@@ -147,9 +182,9 @@ export default function AssessmentPage() {
                          transition={{ duration: 0.3 }}
                          className="flex-1 flex flex-col"
                        >
-                         <h3 className="text-xl font-mono text-white leading-relaxed mb-8">{MOCK_QUESTIONS[currentQuestion].question}</h3>
+                         <h3 className="text-xl font-mono text-white leading-relaxed mb-8">{questions[currentQuestion]?.question}</h3>
                          <div className="space-y-3 flex-1" style={{ perspective: "1000px" }}>
-                           {MOCK_QUESTIONS[currentQuestion].options.map((opt, i) => (
+                           {questions[currentQuestion]?.options.map((opt: string, i: number) => (
                              <HolographicOption 
                                key={i} 
                                opt={opt} 
@@ -162,7 +197,7 @@ export default function AssessmentPage() {
                        </motion.div>
                      </AnimatePresence>
                      <button onClick={handleNext} className="mt-8 self-end px-8 py-3 bg-white/5 border border-white/10 text-white rounded-xl font-cyber font-bold hover:bg-white/10">
-                       {currentQuestion === MOCK_QUESTIONS.length - 1 ? 'Submit' : 'Next'}
+                       {currentQuestion === questions.length - 1 ? 'Submit' : 'Next'}
                      </button>
                   </SpotlightCard>
                 </motion.div>
@@ -178,14 +213,102 @@ export default function AssessmentPage() {
               )}
 
               {phase === "complete" && (
-                <motion.div key="complete" variants={phaseVariants} initial="initial" animate="animate" exit="exit" className="absolute inset-0">
-                  <SpotlightCard spotlightColor="rgba(16, 185, 129, 0.2)" className="h-full p-12 flex flex-col items-center justify-center text-center space-y-8 border-emerald-500/30 bg-emerald-500/5">
-                    <CheckCircle2 size={64} className="text-emerald-400" />
-                    <h2 className="text-3xl font-display font-black text-emerald-400 uppercase">Assessment Complete</h2>
-                    <Link href="/skills">
-                      <button className="px-8 py-4 bg-emerald-500/20 text-emerald-400 border border-emerald-400/50 rounded-xl font-cyber font-bold uppercase">Return to Registry</button>
-                    </Link>
-                  </SpotlightCard>
+                <motion.div key="complete" variants={phaseVariants} initial="initial" animate="animate" exit="exit" className="absolute inset-0 overflow-y-auto custom-scrollbar pb-8">
+                  <div className="space-y-6">
+                    {/* Top Result Banner */}
+                    <SpotlightCard className="flex flex-col md:flex-row items-center justify-between gap-8 py-10 px-8 border border-emerald-500/30 bg-gradient-to-br from-emerald-900/20 to-black shadow-[0_0_40px_rgba(16,185,129,0.15)]">
+                      <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                        <div className="w-28 h-28 rounded-full flex items-center justify-center border-4 relative bg-emerald-500/10 border-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.4)]">
+                          {/* Inner glowing ring */}
+                          <div className="absolute inset-2 rounded-full border border-dashed animate-[spin_10s_linear_infinite] border-emerald-400/50" />
+                          <CheckCircle2 size={48} className="text-emerald-400 drop-shadow-[0_0_15px_rgba(16,185,129,0.8)]" />
+                        </div>
+                        <div className="space-y-2">
+                          <h2 className={clsx("text-3xl font-display font-black tracking-tight drop-shadow-sm", resultData?.passed ? "text-emerald-400" : "text-red-400")}>
+                            {resultData?.passed ? "AST VERIFICATION PASSED" : "AST VERIFICATION FAILED"}
+                          </h2>
+                          <p className={clsx("font-mono text-sm max-w-sm leading-relaxed", resultData?.passed ? "text-emerald-400/80" : "text-red-400/80")}>
+                            {resultData?.passed ? "Neural analysis confirmed expertise. You now hold the Cryptographic Skill Badge for this domain." : "Neural analysis detected insufficient expertise. Review the materials and try again later."}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-center bg-black/40 border border-emerald-500/20 rounded-2xl p-6 min-w-[200px]">
+                        <span className="text-[10px] font-cyber text-emerald-500 uppercase tracking-widest mb-2">Final Score</span>
+                        <div className="flex items-end gap-2">
+                          <span className="text-5xl font-display font-black text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                            {resultData?.percentage ? Math.round(resultData.percentage) : 0}%
+                          </span>
+                        </div>
+                        {resultData?.passed && (
+                          <div className="mt-2 text-[10px] text-emerald-400 font-mono">+ Trust Score Impact</div>
+                        )}
+                      </div>
+                    </SpotlightCard>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {/* Official Badge Card */}
+                      <SpotlightCard className="col-span-1 p-8 border-white/10 bg-white/[0.02] flex flex-col items-center justify-center text-center">
+                        <div className="relative w-32 h-32 mb-6 group">
+                          <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-purple-500/20 rounded-full blur-xl group-hover:opacity-100 opacity-50 transition-opacity" />
+                          <div className="absolute inset-0 border-2 border-cyan-400/50 rounded-full animate-[spin_8s_linear_infinite]" />
+                          <div className="absolute inset-2 border border-purple-500/30 rounded-full animate-[spin_12s_linear_infinite_reverse]" />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm rounded-full border border-white/10">
+                            <ShieldAlert size={40} className="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]" />
+                          </div>
+                        </div>
+                        <h3 className="font-sans font-bold text-lg text-white mb-1">{skillId} Verified</h3>
+                        <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Global Expertise Badge Issued</p>
+                        <div className="mt-6 w-full pt-6 border-t border-white/10 text-[9px] font-mono text-gray-600 break-all">
+                          Proof ID: {Math.random().toString(36).substring(2, 15)}...
+                        </div>
+                      </SpotlightCard>
+
+                      {/* Detailed Analysis Report */}
+                      <SpotlightCard className="p-8 border-white/10 bg-white/[0.02] col-span-1 md:col-span-2">
+                        <h3 className="font-sans font-medium text-xs uppercase tracking-wider text-white mb-6">Deep-Scan Cryptographic Report</h3>
+                        <div className="space-y-6">
+                          {[
+                            { label: "Technical Accuracy", value: 0.94 },
+                            { label: "Time Efficiency", value: 0.88 },
+                            { label: "Behavioral Consistency", value: 0.98 },
+                          ].map(({ label, value }) => {
+                            const display = `${(value * 100).toFixed(0)}%`;
+                            return (
+                              <div key={label} className="space-y-3">
+                                <div className="flex justify-between font-mono text-sm uppercase">
+                                  <span className="text-gray-400 font-bold tracking-wider">{label}</span>
+                                  <span className="font-black tracking-widest text-emerald-400 drop-shadow-sm">
+                                    {display}
+                                  </span>
+                                </div>
+                                <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/10">
+                                  <div
+                                    className="h-full rounded-full transition-all duration-1000 shadow-sm bg-emerald-400 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                                    style={{ width: `${value * 100}%` }}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="pt-6 mt-6 border-t border-white/10 space-y-2">
+                          <p className="text-xs font-cyber font-bold text-gray-500 uppercase tracking-widest">Neural Verification</p>
+                          <p className="text-sm font-mono text-cyan-400 flex gap-3 p-3 bg-cyan-500/10 border border-cyan-500/20 rounded-lg">
+                            <span>✓</span> No anomaly signatures detected. Zero-knowledge proof minted on-chain.
+                          </p>
+                        </div>
+                      </SpotlightCard>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <Link href="/skills" className="flex-1">
+                        <button className="w-full flex items-center justify-center py-4 bg-white text-black rounded-xl font-sans font-bold text-xs uppercase tracking-wider hover:bg-gray-200 transition-all gap-2">
+                          Return to Skill Registry
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>

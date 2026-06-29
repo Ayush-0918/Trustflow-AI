@@ -5,7 +5,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { WebGLBackground } from "@/components/ui/WebGLBackground";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, Zap, Code, ShieldCheck, ChevronRight, Activity, Globe } from "lucide-react";
+import { Search, Filter, Zap, Code, ShieldCheck, ChevronRight, Activity, Globe, Loader2, Check } from "lucide-react";
 import { TrustRing } from "@/components/features/trust/TrustBadge";
 import { useAudio } from "@/lib/AudioProvider";
 import { clsx } from "clsx";
@@ -1575,14 +1575,31 @@ const JOBS = [
     "trust_required": 65,
     "client": "Alpha Fund",
     "verified": true,
-    "color": "cyan"
   }
 ];
 
 export default function MarketplacePage() {
-  const { playClick, playHover } = useAudio();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSector, setActiveSector] = useState<string | null>(null);
+  const { playClick, playSuccess, playHover } = useAudio();
+  
+  // State for signing simulation
+  const [signingJobs, setSigningJobs] = useState<Record<number, boolean>>({});
+  const [signedJobs, setSignedJobs] = useState<Record<number, boolean>>({});
+
+  const handleSignContract = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    if (signedJobs[index] || signingJobs[index]) return;
+    
+    playClick();
+    setSigningJobs(prev => ({ ...prev, [index]: true }));
+    
+    setTimeout(() => {
+      setSigningJobs(prev => ({ ...prev, [index]: false }));
+      setSignedJobs(prev => ({ ...prev, [index]: true }));
+      playSuccess();
+    }, 2000);
+  };
 
   const filteredJobs = JOBS.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -1821,10 +1838,23 @@ export default function MarketplacePage() {
                               </div>
                               
                               <button 
-                                onClick={(e) => { e.stopPropagation(); playClick(); }}
-                                className={clsx("mt-6 md:mt-0 flex items-center justify-center gap-2 px-6 py-3 w-full bg-white/5 border border-white/10 rounded-lg font-sans font-bold text-[10px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95 group-hover:border-white/30 shadow-sm", styles.button)}
+                                onClick={(e) => handleSignContract(e, i)}
+                                disabled={signingJobs[i] || signedJobs[i]}
+                                className={clsx(
+                                  "mt-6 md:mt-0 flex items-center justify-center gap-2 px-6 py-3 w-full border rounded-lg font-sans font-bold text-[10px] uppercase tracking-widest transition-all shadow-sm",
+                                  signedJobs[i] 
+                                    ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
+                                    : styles.button,
+                                  !signedJobs[i] && !signingJobs[i] ? "hover:scale-105 active:scale-95 group-hover:border-white/30 bg-white/5 border-white/10" : ""
+                                )}
                               >
-                                Sign Contract <ChevronRight size={14} />
+                                {signingJobs[i] ? (
+                                  <><Loader2 size={14} className="animate-spin" /> Handshake...</>
+                                ) : signedJobs[i] ? (
+                                  <><Check size={14} /> Protocol Signed</>
+                                ) : (
+                                  <>Sign Contract <ChevronRight size={14} /></>
+                                )}
                               </button>
                             </div>
                           </div>

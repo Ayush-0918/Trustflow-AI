@@ -4,12 +4,15 @@ import { AppShell } from "@/components/layout/AppShell";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { WebGLBackground } from "@/components/ui/WebGLBackground";
 import { motion } from "framer-motion";
-import { FolderKanban, Plus, Clock, Zap, AlertCircle, ShieldAlert, Cpu, Activity } from "lucide-react";
+import { FolderKanban, Plus, Clock, Zap, AlertCircle, ShieldAlert, Cpu, Activity, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { DeployTerminalOverlay } from "@/components/ui/DeployTerminalOverlay";
+import { useQuery } from "@tanstack/react-query";
+import { projectsAPI } from "@/lib/api";
+import { formatDistanceToNow } from "date-fns";
 
 gsap.registerPlugin(useGSAP);
 
@@ -112,21 +115,32 @@ const MOCK_CONTRACTS = [
 
 export default function ProjectsPage() {
   const container = useRef<HTMLDivElement>(null);
-  const [contracts, setContracts] = useState(MOCK_CONTRACTS);
   const [isDeploying, setIsDeploying] = useState(false);
+
+  const { data: apiProjects, isLoading, refetch } = useQuery({
+    queryKey: ["my-projects"],
+    queryFn: () => projectsAPI.myProjects().then((r) => r.data),
+  });
+
+  // Map API projects to the card format, fall back to MOCK_CONTRACTS if API returns nothing
+  const contracts = useMemo(() => {
+    if (apiProjects && apiProjects.length > 0) {
+      return apiProjects.map((p: any) => ({
+        id: `cnt_${p.id}`,
+        title: p.title,
+        status: p.status || "open",
+        amount: p.agreed_price || p.budget_max || 0,
+        time: p.created_at ? formatDistanceToNow(new Date(p.created_at), { addSuffix: true }) : "Just now",
+        progress: p.status === "completed" ? 100 : p.status === "in_progress" ? 50 : p.status === "review" ? 90 : 5,
+        type: "Smart Contract",
+      }));
+    }
+    return MOCK_CONTRACTS;
+  }, [apiProjects]);
 
   const handleDeploymentComplete = () => {
     setIsDeploying(false);
-    const newContract = {
-      id: `cnt_${Math.random().toString(36).substring(2, 12)}`,
-      title: "Zero-Knowledge Escrow",
-      status: "open",
-      amount: 12500,
-      time: "Just now",
-      progress: 0,
-      type: "ZK Proof"
-    };
-    setContracts(prev => [newContract, ...prev]);
+    refetch();
   };
 
   useGSAP(() => {
@@ -191,12 +205,12 @@ export default function ProjectsPage() {
           {/* Contracts List */}
           <div className="xl:col-span-2 space-y-6">
             {contracts.map((contract) => {
-              const styles = STATUS_STYLES[contract.status];
+              const styles = STATUS_STYLES[contract.status] || STATUS_STYLES.open;
               const StatusIcon = styles.iconType;
               return (
               <div key={contract.id} className="contract-card">
                 <HoloCard spotlightColor={styles.glow} className="p-0">
-                  <Link href={`/projects/${contract.id}`} className="block relative overflow-hidden group">
+                  <Link href={`/projects/${contract.id.toString().replace('cnt_', '')}`} className="block relative overflow-hidden group">
                      {/* Scanning background effect */}
                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out z-0" />
                      

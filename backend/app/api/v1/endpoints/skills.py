@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from typing import List
+from typing import List, Dict
 
 from app.db.session import get_db
 from app.core.security import get_current_user
@@ -13,6 +13,15 @@ router = APIRouter()
 
 PASSING_SCORE = 70  # percent
 
+# In-memory cache for generated questions, keyed by (user_id, skill_name).
+# This ensures the same questions used for display are used for grading.
+# In production, use Redis or a DB table instead.
+_question_cache: Dict[str, list] = {}
+
+
+def _cache_key(user_id: int, skill_name: str) -> str:
+    return f"{user_id}:{skill_name.lower()}"
+
 
 @router.get("/{skill_name}/questions")
 async def get_skill_questions(
@@ -21,6 +30,11 @@ async def get_skill_questions(
 ):
     try:
         questions = await ai_service.generate_skill_questions(skill_name, count=10)
+
+        # Cache the full questions (with correct_answer) for validation on submit
+        key = _cache_key(int(current_user.id), skill_name)  # type: ignore
+        _question_cache[key] = questions
+
         # Strip correct_answer before sending to client
         sanitized = [
             {
@@ -32,7 +46,7 @@ async def get_skill_questions(
             }
             for i, q in enumerate(questions)
         ]
-        return {"skill": skill_name, "questions": sanitized, "_raw": questions}
+        return {"skill": skill_name, "questions": sanitized}
     except Exception as e:
         raise HTTPException(500, f"Could not generate questions: {str(e)}")
 
@@ -43,8 +57,13 @@ async def submit_skill_test(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # Generate fresh questions to validate answers
-    questions = await ai_service.generate_skill_questions(data.skill_name, count=10)
+    # Retrieve cached questions instead of re-generating (which would give different answers)
+    key = _cache_key(int(current_user.id), data.skill_name)  # type: ignore
+    questions = _question_cache.pop(key, None)
+
+    if not questions:
+        # Fallback: if cache expired or server restarted, re-generate (best effort)
+        questions = await ai_service.generate_skill_questions(data.skill_name, count=10)
 
     score = 0
     max_score = len(questions)
@@ -52,8 +71,12 @@ async def submit_skill_test(
         q_id = q.get("id", f"q{i}")
         user_answer = data.answers.get(q_id)
         correct = q.get("correct_answer")
-        if user_answer is not None and int(user_answer) == int(correct):
-            score += 1
+        if user_answer is not None and correct is not None:
+            try:
+                if int(user_answer) == int(correct):
+                    score += 1
+            except (ValueError, TypeError):
+                pass
 
     percentage = (score / max_score * 100) if max_score > 0 else 0
     passed = percentage >= PASSING_SCORE

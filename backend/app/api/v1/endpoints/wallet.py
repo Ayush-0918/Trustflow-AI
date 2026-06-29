@@ -15,5 +15,9 @@ async def get_wallet(db: AsyncSession = Depends(get_db), current_user: User = De
     result = await db.execute(select(Wallet).options(selectinload(Wallet.transactions)).where(Wallet.user_id == current_user.id))
     wallet = result.scalar_one_or_none()
     if not wallet:
-        raise HTTPException(404, "Wallet not found")
+        # Auto-create wallet with zero balance instead of 404
+        wallet = Wallet(user_id=current_user.id)
+        db.add(wallet)
+        await db.commit()
+        await db.refresh(wallet)
     return wallet

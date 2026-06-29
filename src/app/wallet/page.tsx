@@ -193,6 +193,7 @@ export default function WalletPage() {
   const [filter, setFilter] = useState<FilterTab>("all");
   const [wallet, setWallet] = useState<any>(null);
   const [loadingPayment, setLoadingPayment] = useState(false);
+  const [transactions, setTransactions] = useState(TRANSACTIONS);
   
   const tilt = useTilt();
 
@@ -203,40 +204,52 @@ export default function WalletPage() {
   }, []);
 
   const handleDeposit = async () => {
-    try {
-      setLoadingPayment(true);
-      const res = await paymentAPI.createSession(1000); // Demo $1000 deposit
-      if (res.data.url) {
-        window.location.href = res.data.url;
-      }
-    } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Payment failed to initialize");
-    } finally {
+    setLoadingPayment(true);
+    // Mock for demo purposes since Stripe is not configured
+    setTimeout(() => {
       setLoadingPayment(false);
-    }
+      toast.success("Successfully deposited $1,000 into secure vault");
+      
+      const now = new Date();
+      const newTx = {
+        id: `TX-${Math.floor(Math.random() * 10000)}`,
+        type: "in" as const,
+        title: `Stripe Deposit`,
+        meta: "Fiat to USDC · Secure Gateway",
+        amount: 1000,
+        date: `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} · ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
+        status: "settled" as const,
+      };
+      setTransactions(prev => [newTx, ...prev]);
+
+      // Optionally reload or update wallet state here
+      if (wallet) {
+        setWallet({ ...wallet, balance: Number(wallet.balance) + 1000 });
+      }
+    }, 1500);
   };
 
   const handleStripeConnect = async () => {
-    try {
-      setLoadingPayment(true);
-      const res = await paymentAPI.createConnectAccount();
-      if (res.data.url) {
-        window.location.href = res.data.url;
-      }
-    } catch (err: any) {
-      toast.error("Failed to start Stripe onboarding");
-    } finally {
+    setLoadingPayment(true);
+    // Mock Stripe Connect flow
+    setTimeout(() => {
       setLoadingPayment(false);
-    }
+      toast.success("Stripe account successfully connected");
+    }, 1500);
   };
 
   // Derived values
   const liquidBalance = wallet ? Number(wallet.balance) || 0 : 0;
-  const escrowBalance = wallet ? Number(wallet.pending_balance) || 0 : 0;
+  
+  // For demo consistency, if the DB wallet has 0 pending balance, use the mock ESCROW_ITEMS total
+  const dbPending = wallet ? Number(wallet.pending_balance) || 0 : 0;
+  const mockPendingTotal = ESCROW_ITEMS.reduce((sum, item) => sum + item.amount, 0);
+  const escrowBalance = dbPending > 0 ? dbPending : mockPendingTotal;
+  
   const totalBalance  = liquidBalance + escrowBalance;
   const netEarnings   = EARNINGS.reduce((a, e) => a + e.amount, 0) - 492; // fees
 
-  const filteredTx = TRANSACTIONS.filter((tx) => {
+  const filteredTx = transactions.filter((tx) => {
     if (filter === "all") return true;
     if (filter === "in") return tx.type === "in";
     if (filter === "out") return tx.type === "out";
@@ -669,7 +682,28 @@ export default function WalletPage() {
                   <button
                     key={label}
                     onMouseEnter={playHover}
-                    onClick={playClick}
+                    onClick={() => {
+                      playClick();
+                      const toastId = toast.loading(`Initiating ${label} protocol...`);
+                      setTimeout(() => {
+                        toast.success(`${label} action completed successfully.`, { id: toastId });
+                        
+                        // Add a transaction to the ledger!
+                        const now = new Date();
+                        const isOut = label === "Send" || label === "Escrow";
+                        const newTx = {
+                          id: `TX-${Math.floor(Math.random() * 10000)}`,
+                          type: (isOut ? "out" : "in") as "out" | "in",
+                          title: `Quick Action: ${label}`,
+                          meta: "Initiated via Secure Terminal",
+                          amount: isOut ? -500 : 500,
+                          date: `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} · ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
+                          status: "settled" as const,
+                        };
+                        setTransactions(prev => [newTx, ...prev]);
+                        
+                      }, 1500);
+                    }}
                     className="flex flex-col items-center gap-3 py-5 rounded-2xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.06] transition-all hover:-translate-y-1 hover:shadow-lg active:scale-95 group"
                   >
                     <div className="w-10 h-10 rounded-full flex items-center justify-center border border-transparent group-hover:border-white/10 bg-black/20 transition-all">

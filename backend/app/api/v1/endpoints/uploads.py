@@ -55,7 +55,7 @@ async def upload_verification(
     if len(contents) > MAX_FILE_SIZE:
         raise HTTPException(400, "File too large")
 
-    url = await upload_verification_frame(contents, current_user.id)
+    url = await upload_verification_frame(contents, int(current_user.id)) # type: ignore
     
     # We can also verify them immediately or return the URL for the frontend to pass to the AI
     current_user.identity_verified = True  # type: ignore

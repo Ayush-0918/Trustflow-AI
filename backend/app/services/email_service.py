@@ -31,7 +31,7 @@ async def send_welcome_email(email_to: str, username: str):
         </div>
         """
         
-        response = resend.Emails.send({
+        response = resend.Emails.send({ # type: ignore
             "from": "onboarding@resend.dev",
             "to": email_to,
             "subject": "Welcome to TrustFlow! 🚀",
@@ -62,7 +62,7 @@ async def send_milestone_funded_email(email_to: str, project_title: str, amount:
         </div>
         """
         
-        response = resend.Emails.send({
+        response = resend.Emails.send({ # type: ignore
             "from": "onboarding@resend.dev",
             "to": email_to,
             "subject": f"Funds Secured: {project_title}",

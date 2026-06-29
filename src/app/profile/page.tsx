@@ -12,7 +12,8 @@ import { useGSAP } from "@gsap/react";
 import { useAudio } from "@/lib/AudioProvider";
 import { useAuthStore } from "@/store/authStore";
 import toast from "react-hot-toast";
-import { usersAPI } from "@/lib/api";
+import { usersAPI, trustAPI, skillsAPI } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 
 gsap.registerPlugin(useGSAP);
 
@@ -53,12 +54,8 @@ const THEME_STYLES: Record<ThemeColor, any> = {
   }
 };
 
-const BADGES = [
-  { id: "B1", title: "React Native Core", type: "AI PROCTORED", score: 98, date: "2024.10", icon: LayoutDashboard, theme: "cyan" as ThemeColor },
-  { id: "B2", title: "Node.js Microservices", type: "AI PROCTORED", score: 95, date: "2024.09", icon: Terminal, theme: "emerald" as ThemeColor },
-  { id: "B3", title: "PostgreSQL Advanced", type: "AI PROCTORED", score: 92, date: "2024.09", icon: Database, theme: "purple" as ThemeColor },
-  { id: "B4", title: "System Architecture", type: "PEER REVIEWED", score: 88, date: "2024.08", icon: GitMerge, theme: "amber" as ThemeColor },
-];
+const BADGE_ICONS = [LayoutDashboard, Terminal, Database, GitMerge, Cpu, Medal];
+const BADGE_THEMES: ThemeColor[] = ["cyan", "emerald", "purple", "amber"];
 
 export default function ProfilePage() {
   const { user } = useAuthStore();
@@ -67,24 +64,62 @@ export default function ProfilePage() {
   const { playClick, playHover } = useAudio();
   const [loadingPhone, setLoadingPhone] = useState(false);
   const [loadingMedia, setLoadingMedia] = useState(false);
-  const trustScore = 842;
-  const trustLevel = "ELITE NODE";
+  const [phoneInput, setPhoneInput] = useState("");
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
+
+  // Fetch real trust score
+  const { data: trustData } = useQuery({
+    queryKey: ["trust-score"],
+    queryFn: () => trustAPI.getScore().then((r) => r.data),
+  });
+
+  // Fetch real skill badges
+  const { data: skillResults } = useQuery({
+    queryKey: ["my-skill-results"],
+    queryFn: () => skillsAPI.myResults().then((r) => r.data),
+  });
+
+  const trustScore = Math.round(trustData?.overall_score ?? user?.trust_score ?? 50);
+  const trustLevel = trustScore >= 80 ? "ELITE NODE" : trustScore >= 60 ? "VERIFIED NODE" : trustScore >= 40 ? "ACTIVE NODE" : "NEW NODE";
+
+  // Map real skill results to badge format, fall back to hardcoded BADGES
+  const badges = (skillResults && skillResults.length > 0)
+    ? skillResults.map((r: any, i: number) => ({
+        id: `B${r.id}`,
+        title: r.skill_name,
+        type: "AI PROCTORED",
+        score: Math.round(r.percentage),
+        date: new Date(r.created_at).toLocaleDateString("en-US", { year: "numeric", month: "2-digit" }).replace("/", "."),
+        icon: BADGE_ICONS[i % BADGE_ICONS.length],
+        theme: BADGE_THEMES[i % BADGE_THEMES.length],
+      }))
+    : [
+        { id: "B1", title: "React Native Core", type: "AI PROCTORED", score: 98, date: "2024.10", icon: LayoutDashboard, theme: "cyan" as ThemeColor },
+        { id: "B2", title: "Node.js Microservices", type: "AI PROCTORED", score: 95, date: "2024.09", icon: Terminal, theme: "emerald" as ThemeColor },
+        { id: "B3", title: "PostgreSQL Advanced", type: "AI PROCTORED", score: 92, date: "2024.09", icon: Database, theme: "purple" as ThemeColor },
+        { id: "B4", title: "System Architecture", type: "PEER REVIEWED", score: 88, date: "2024.08", icon: GitMerge, theme: "amber" as ThemeColor },
+      ];
 
   useGSAP(() => {
     gsap.from(".profile-elem", {
       y: 30,
       opacity: 0,
-      duration: 1,
-      stagger: 0.1,
+      duration: 0.5, // much faster duration
+      stagger: 0.05, // much faster stagger
       ease: "power3.out",
     });
   }, { scope: container });
 
   const handleVerifyPhone = async () => {
+    if (!phoneInput.trim() || phoneInput.length < 10) {
+      setShowPhoneModal(true);
+      return;
+    }
     playClick();
     setLoadingPhone(true);
+    setShowPhoneModal(false);
     try {
-      await usersAPI.verifyPhone("+1234567890"); // Uses mock or user phone
+      await usersAPI.verifyPhone(phoneInput);
       toast.success("SMS Verification Code Sent via Twilio!");
     } catch (err: any) {
       toast.error(err.response?.data?.detail || "Failed to send SMS");
@@ -185,6 +220,30 @@ export default function ProfilePage() {
                   </div>
                </SpotlightCard>
 
+               {/* Phone Verification Modal */}
+               {showPhoneModal && (
+                 <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowPhoneModal(false)}>
+                   <div className="bg-[#0A0A0A] border border-white/10 rounded-2xl p-8 max-w-sm w-full space-y-6" onClick={(e) => e.stopPropagation()}>
+                     <h3 className="font-display font-bold text-lg text-white">Phone Verification</h3>
+                     <p className="text-sm font-mono text-gray-400">Enter your phone number to receive a Twilio verification code.</p>
+                     <input
+                       type="tel"
+                       value={phoneInput}
+                       onChange={(e) => setPhoneInput(e.target.value)}
+                       placeholder="+1 (555) 123-4567"
+                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-mono text-sm focus:outline-none focus:border-cyan-400/50"
+                     />
+                     <button
+                       onClick={handleVerifyPhone}
+                       disabled={loadingPhone || phoneInput.length < 10}
+                       className="w-full py-3 bg-cyan-500/20 border border-cyan-500/40 rounded-xl font-cyber text-xs uppercase tracking-widest text-cyan-400 hover:bg-cyan-500/30 transition-all disabled:opacity-50"
+                     >
+                       Send Code
+                     </button>
+                   </div>
+                 </div>
+               )}
+
                <SpotlightCard className="profile-elem p-6 border-white/10 bg-black/40 backdrop-blur-3xl space-y-4 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
                   <h3 className="font-cyber font-bold tracking-widest text-xs text-gray-500 uppercase flex items-center gap-2">
                     <Cpu size={14} /> Hardware Fingerprint
@@ -280,14 +339,14 @@ export default function ProfilePage() {
                  </div>
                  
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {BADGES.map((badge, i) => {
-                       const styles = THEME_STYLES[badge.theme];
+                    {badges.map((badge: any, i: number) => {
+                       const styles = THEME_STYLES[badge.theme as ThemeColor] || THEME_STYLES.cyan;
                        return (
                        <motion.div 
                          key={badge.id}
                          initial={{ opacity: 0, scale: 0.95 }}
                          animate={{ opacity: 1, scale: 1 }}
-                         transition={{ delay: i * 0.1 + 0.5 }}
+                         transition={{ delay: i * 0.05 }}
                          onMouseEnter={playHover}
                          className={`profile-elem group p-5 rounded-xl bg-black/40 backdrop-blur-3xl border border-white/5 transition-all flex gap-4 overflow-hidden relative shadow-[0_0_15px_rgba(0,0,0,0.5)] cursor-pointer ${styles.cardBorder} ${styles.cardShadow}`}
                        >
