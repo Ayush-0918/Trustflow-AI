@@ -1,5 +1,7 @@
 <div align="center">
-  <img src="https://via.placeholder.com/150/000000/22d3ee?text=TrustFlow+AI" alt="TrustFlow AI Logo" width="120" />
+  <img src="https://dummyimage.com/150x150/000000/22d3ee.png&text=TrustFlow+AI"
+     alt="TrustFlow AI Logo"
+     width="120">
   <h1>🌐 TrustFlow AI</h1>
   <p><strong>The First Cryptographically Secure, AI-Governed Freelance Economy</strong></p>
 
