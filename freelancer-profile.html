@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelancer Trust Profile - TrustFlow AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="app-sidebar">
+            <div>
+                <div class="sidebar-head">
+                    <div class="brand-lockup">
+                        <span class="brand-glyph" aria-hidden="true">
+                            <span class="square"></span>
+                            <span class="circle"></span>
+                            <span class="triangle"></span>
+                        </span>
+                        <div>
+                            <div class="brand-wordmark">TrustFlow AI</div>
+                            <p>Freelancer trust intelligence</p>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a class="sidebar-link" href="dashboard.html">
+                        <span><strong>Dashboard</strong><small>Live project command</small></span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                    <a class="sidebar-link" href="project-room.html">
+                        <span><strong>Project Room</strong><small>Delivery and approvals</small></span>
+                        <span class="nav-badge">03</span>
+                    </a>
+                    <a class="sidebar-link" href="trust-wallet.html">
+                        <span><strong>Trust Wallet</strong><small>PFI and escrow</small></span>
+                        <span class="nav-badge">PFI</span>
+                    </a>
+                    <a class="sidebar-link active" href="freelancer-profile.html">
+                        <span><strong>Freelancer Profile</strong><small>Trust score and credibility</small></span>
+                        <span class="nav-badge" id="profileSidebarTrust">94</span>
+                    </a>
+                    <a class="sidebar-link" href="video-verification.html">
+                        <span><strong>Video Verification</strong><small>Behavioral trust scan</small></span>
+                        <span class="nav-badge">AI</span>
+                    </a>
+                    <a class="sidebar-link" href="skill-test.html">
+                        <span><strong>Skill Test</strong><small>Micro validation</small></span>
+                        <span class="nav-badge">96</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-card">
+                <div class="eyebrow">Freelancer Trust Profile</div>
+                <h3>One credibility page for judges and clients</h3>
+                <p>Trust score, completed projects, behavior rating, verified skill, PFI index, and escrow outcomes stay visible in one premium screen.</p>
+            </div>
+        </aside>
+
+        <main class="app-main">
+            <header class="app-topbar">
+                <div class="app-title">
+                    <span>Credibility command layer</span>
+                    <h1>Freelancer Trust Profile</h1>
+                </div>
+
+                <div class="toolbar">
+                    <a class="button-ghost" href="trust-wallet.html">Open Trust Wallet</a>
+                    <a class="button-ghost" href="skill-test.html">Run Skill Test</a>
+                    <a class="button-dark" href="video-call.html">Open Live Call</a>
+                </div>
+            </header>
+
+            <section class="profile-hero-grid">
+                <article class="profile-summary-card">
+                    <div class="profile-identity">
+                        <div class="profile-avatar-large" id="profileAvatar">AD</div>
+                        <div>
+                            <span class="panel-label">Freelancer Trust Profile</span>
+                            <h2 id="profileName">Arjun Dev</h2>
+                            <p id="profileTitle">Frontend engineer and product-minded freelancer</p>
+                        </div>
+                    </div>
+
+                    <div class="badge-row spaced">
+                        <span class="badge-tag success" id="profilePrimaryBadge">Elite Freelancer</span>
+                        <span class="badge-tag" id="profileSkillChip">Skill test pending</span>
+                        <span class="badge-tag" id="profileBehaviorChip">Behavior scan pending</span>
+                    </div>
+
+                    <div class="profile-status-grid">
+                        <div class="profile-status-card">
+                            <span class="panel-label">Trust Score</span>
+                            <strong id="profileHeroTrustScore">94</strong>
+                            <p>Trust Between Freelancers and Clients, quantified in one usable score.</p>
+                        </div>
+                        <div class="profile-status-card">
+                            <span class="panel-label">Projects Completed</span>
+                            <strong id="profileHeroProjects">17</strong>
+                            <p>Delivery history contributes directly to credibility and payout confidence.</p>
+                        </div>
+                        <div class="profile-status-card">
+                            <span class="panel-label">Skill Test</span>
+                            <strong id="profileHeroSkill">Passed</strong>
+                            <p>The verified skill badge helps reduce assignment risk before work starts.</p>
+                        </div>
+                        <div class="profile-status-card">
+                            <span class="panel-label">AI Behavior Rating</span>
+                            <strong id="profileHeroBehavior">Stable</strong>
+                            <p>Live call analysis updates this rating based on confidence and commitment signals.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">Live Trust Meter</div>
+                            <p>Circular progress UI for fast trust understanding during the demo.</p>
+                        </div>
+                        <span class="badge-tag success" id="profileRiskBadge">Safe</span>
+                    </div>
+
+                    <div class="trust-meter-grid">
+                        <div class="trust-meter-card">
+                            <div class="trust-ring safe" id="profileTrustRing" style="--progress: 94;">
+                                <div class="trust-ring-core">
+                                    <span class="trust-ring-label">Trust Level</span>
+                                    <strong id="profileTrustMeterScore">94 / 100</strong>
+                                    <small id="profileTrustTier">Elite Freelancer</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="risk-system-card">
+                            <span class="panel-label">AI Risk Alert System</span>
+                            <h3 id="profileRiskTitle">Stable behavior and verified capability.</h3>
+                            <p id="profileRiskText">Green means safe. Yellow means warning. Red means risk. The trust engine updates after skill tests, video calls, milestones, and approvals.</p>
+                            <div class="meter-legend">
+                                <span class="legend-pill safe">Safe</span>
+                                <span class="legend-pill warning">Warning</span>
+                                <span class="legend-pill danger">Risk</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section class="kpi-grid">
+                <article class="kpi-card">
+                    <span>Trust Score</span>
+                    <strong id="trustProfileScore">94</strong>
+                    <p>Live credibility score used in releases and assignment confidence.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Projects Completed</span>
+                    <strong id="trustProfileProjects">17</strong>
+                    <p>Completed milestones and finished contracts strengthen professional trust.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Skill Test</span>
+                    <strong id="trustProfileSkill">Passed</strong>
+                    <p>AI micro-test result used before awarding a verified skill badge.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>PFI Index</span>
+                    <strong id="trustProfilePFI">91</strong>
+                    <p>Professional Fidelity Index combines proof, quality, behavior, and payout reliability.</p>
+                </article>
+            </section>
+
+            <section class="content-grid">
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">AI Risk Alert System</div>
+                                <p>Status callouts the jury can understand instantly.</p>
+                            </div>
+                        </div>
+
+                        <div class="alert-banner success" id="profileAlertBanner">
+                            <h4 id="profileAlertTitle">TrustFlow currently sees a stable freelancer profile.</h4>
+                            <p id="profileAlertBody">Escrow can proceed under normal rules because recent behavior and skill signals look healthy.</p>
+                        </div>
+
+                        <div class="analysis-grid spaced">
+                            <div class="analysis-card">
+                                <h4>AI Behavior Rating</h4>
+                                <span class="metric-number" id="trustProfileBehavior">Stable</span>
+                            </div>
+                            <div class="analysis-card">
+                                <h4>Escrow State</h4>
+                                <span class="metric-number" id="profileEscrowState">Released</span>
+                            </div>
+                            <div class="analysis-card">
+                                <h4>Trust Hold</h4>
+                                <span class="metric-number" id="profileTrustHold">$0</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Trust Timeline</div>
+                                <p>Exactly the kind of sequence you described: skill, milestone, approval, behavior, and escrow.</p>
+                            </div>
+                        </div>
+
+                        <div class="trust-timeline-list" id="profileTrustTimeline"></div>
+                    </article>
+                </div>
+
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Trust Trend</div>
+                                <p>Trust Score and PFI history across capability, delivery, and behavior checkpoints.</p>
+                            </div>
+                        </div>
+
+                        <div class="trend-chart" id="profileTrustHistory"></div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Trust Activity</div>
+                                <p>Live credibility changes from the backend wallet model.</p>
+                            </div>
+                        </div>
+
+                        <div class="trust-timeline-list" id="profileTrustActivity"></div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Profile Summary</div>
+                                <p>Clean client-facing trust data for demos and decision making.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-list">
+                            <div class="list-card">
+                                <div class="detail-line">
+                                    <span>Trust Score</span>
+                                    <strong id="profileSummaryScore">94</strong>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="detail-line">
+                                    <span>Projects Completed</span>
+                                    <strong id="profileSummaryProjects">17</strong>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="detail-line">
+                                    <span>Skill Test</span>
+                                    <strong id="profileSummarySkill">Passed</strong>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="detail-line">
+                                    <span>AI Behavior Rating</span>
+                                    <strong id="profileSummaryBehavior">Stable</strong>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="detail-line">
+                                    <span>PFI Index</span>
+                                    <strong id="profileSummaryPFI">91</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <footer class="app-footer">
+                <div>
+                    <strong>TrustFlow AI</strong>
+                    <p>This profile page turns backend trust data into a single premium credibility surface for judges, employers, and live demos.</p>
+                </div>
+                <div class="app-footer-links">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="trust-wallet.html">Trust Wallet</a>
+                    <a href="skill-test.html">Skill Test</a>
+                    <a href="video-call.html">Live Call</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui-shell.js"></script>
+    <script src="js/freelancer-profile.js"></script>
+</body>
+
+</html>

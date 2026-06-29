@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Project - TrustFlow AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="app-sidebar">
+            <div>
+                <div class="sidebar-head">
+                    <div class="brand-lockup">
+                        <span class="brand-glyph" aria-hidden="true">
+                            <span class="square"></span>
+                            <span class="circle"></span>
+                            <span class="triangle"></span>
+                        </span>
+                        <div>
+                            <div class="brand-wordmark">TrustFlow AI</div>
+                            <p>Premium trust workspace</p>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a class="sidebar-link" href="dashboard.html">
+                        <span><strong>Dashboard</strong><small>Live project command</small></span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                    <a class="sidebar-link active" href="project-create.html">
+                        <span><strong>Create Project</strong><small>Scope and milestone design</small></span>
+                        <span class="nav-badge">AI</span>
+                    </a>
+                    <a class="sidebar-link" href="project-room.html">
+                        <span><strong>Project Room</strong><small>Delivery workspace</small></span>
+                        <span class="nav-badge">03</span>
+                    </a>
+                    <a class="sidebar-link" href="trust-wallet.html">
+                        <span><strong>Trust Wallet</strong><small>Escrow protection</small></span>
+                        <span class="nav-badge">$</span>
+                    </a>
+                    <a class="sidebar-link" href="video-verification.html">
+                        <span><strong>Verification</strong><small>Identity and liveness</small></span>
+                        <span class="nav-badge">04</span>
+                    </a>
+                    <a class="sidebar-link" href="skill-test.html">
+                        <span><strong>Skill Test</strong><small>Capability confidence</small></span>
+                        <span class="nav-badge">96</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-card">
+                <div class="eyebrow">Project Setup</div>
+                <h3>Brief first. Money second.</h3>
+                <p>Cleaner scope means fewer disputes, clearer proof, and faster releases later.</p>
+            </div>
+        </aside>
+
+        <main class="app-main">
+            <header class="app-topbar">
+                <div class="app-title">
+                    <span>AI project architect</span>
+                    <h1>Create Project</h1>
+                </div>
+
+                <div class="toolbar">
+                    <a class="button-ghost" href="dashboard.html">Back to Dashboard</a>
+                    <button class="button-dark" id="generateProjectPlanButton" type="button">Generate with AI</button>
+                </div>
+            </header>
+
+            <section class="app-hero">
+                <div>
+                    <div class="eyebrow">Brief Engine</div>
+                    <h3 class="section-title">Shape scope before money moves.</h3>
+                    <p class="hero-lead">
+                        Define the work, lock the budget structure, and let TrustFlow build a milestone sequence with
+                        release logic that both sides can understand.
+                    </p>
+                </div>
+
+                <div class="hero-side-grid">
+                    <div class="hero-side-card">
+                        <span class="panel-label">Clarity uplift</span>
+                        <strong>+44%</strong>
+                        <p>Structured project specs reduce revision loops and expectation gaps.</p>
+                    </div>
+                    <div class="hero-side-card">
+                        <span class="panel-label">Suggested funding split</span>
+                        <strong>4 stages</strong>
+                        <p>Balanced milestone sequencing for delivery, review, and release.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-grid">
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Project Brief</div>
+                                <p>Provide the inputs TrustFlow needs to generate premium project structure.</p>
+                            </div>
+                        </div>
+
+                        <form class="form-stack" id="projectCreateForm">
+                            <div class="field">
+                                <label for="project-title">Project title</label>
+                                <input id="project-title" type="text" placeholder="AI SaaS Dashboard for Operations" required>
+                            </div>
+
+                            <div class="split-fields">
+                                <div class="field">
+                                    <label for="client-name">Client or team</label>
+                                    <input id="client-name" type="text" placeholder="Helio Metrics">
+                                </div>
+                                <div class="field">
+                                    <label for="project-category">Category</label>
+                                    <select id="project-category">
+                                        <option>Product design + frontend</option>
+                                        <option>Full-stack application</option>
+                                        <option>Brand and marketing site</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="project-desc">Description</label>
+                                <textarea id="project-desc"
+                                    placeholder="Describe the outcomes, deliverables, constraints, and what good looks like."></textarea>
+                            </div>
+
+                            <div class="split-fields">
+                                <div class="field">
+                                    <label for="budget">Budget</label>
+                                    <input id="budget" type="text" placeholder="$8,500">
+                                </div>
+                                <div class="field">
+                                    <label for="deadline">Deadline</label>
+                                    <input id="deadline" type="date">
+                                </div>
+                            </div>
+
+                            <div class="split-fields">
+                                <div class="field">
+                                    <label for="review-style">Review style</label>
+                                    <select id="review-style">
+                                        <option>Client sign-off + AI verification</option>
+                                        <option>AI verification only</option>
+                                        <option>Manual sign-off only</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label for="risk-level">Risk preference</label>
+                                    <select id="risk-level">
+                                        <option>Balanced</option>
+                                        <option>Conservative</option>
+                                        <option>Fast-moving</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button class="button-dark" type="submit">Create Project Room</button>
+                            <p class="helper-note" id="projectCreateStatus">Generate a plan, then create a project room backed by the live demo API.</p>
+                        </form>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">AI Generated Milestones</div>
+                                <p>Suggested payout architecture based on the current project brief.</p>
+                            </div>
+                            <span class="pill-muted">Draft plan</span>
+                        </div>
+
+                        <div class="table-list">
+                            <div class="table-row table-head">
+                                <div>Milestone</div>
+                                <div>Owner</div>
+                                <div>Payout</div>
+                                <div>Timing</div>
+                            </div>
+                            <div id="projectPlanMilestones"></div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Trust Recommendations</div>
+                                <p>Suggestions derived from the current brief quality.</p>
+                            </div>
+                        </div>
+
+                        <ul class="check-list" id="projectRecommendations"></ul>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Funding Preview</div>
+                                <p>How the current budget is distributed.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-list">
+                            <div class="list-card">
+                                <div class="detail-line">
+                                    <span>Initial escrow deposit</span>
+                                    <strong id="fundingInitial">$3,200</strong>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="detail-line">
+                                    <span>Mid-project locked value</span>
+                                    <strong id="fundingMid">$3,400</strong>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="detail-line">
+                                    <span>Final release reserve</span>
+                                    <strong id="fundingFinal">$1,900</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <footer class="app-footer">
+                <div>
+                    <strong>TrustFlow AI</strong>
+                    <p>Scope clarity, milestone architecture, and escrow staging are generated before the first payment ever moves.</p>
+                </div>
+                <div class="app-footer-links">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="project-room.html">Project Room</a>
+                    <a href="video-verification.html">Verification</a>
+                    <a href="trust-wallet.html">Trust Wallet</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui-shell.js"></script>
+    <script src="js/aiPlanner.js"></script>
+</body>
+
+</html>

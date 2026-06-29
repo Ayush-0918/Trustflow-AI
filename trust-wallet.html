@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Wallet - TrustFlow AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="app-sidebar">
+            <div>
+                <div class="sidebar-head">
+                    <div class="brand-lockup">
+                        <span class="brand-glyph" aria-hidden="true">
+                            <span class="square"></span>
+                            <span class="circle"></span>
+                            <span class="triangle"></span>
+                        </span>
+                        <div>
+                            <div class="brand-wordmark">TrustFlow AI</div>
+                            <p>Autonomous AI intermediary</p>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a class="sidebar-link" href="dashboard.html">
+                        <span><strong>Dashboard</strong><small>Live project command</small></span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                    <a class="sidebar-link" href="project-create.html">
+                        <span><strong>Create Project</strong><small>Requirement analysis</small></span>
+                        <span class="nav-badge">AI</span>
+                    </a>
+                    <a class="sidebar-link" href="project-room.html">
+                        <span><strong>Project Room</strong><small>Automated QA workflow</small></span>
+                        <span class="nav-badge">03</span>
+                    </a>
+                    <a class="sidebar-link active" href="trust-wallet.html">
+                        <span><strong>Trust Wallet</strong><small>PFI and escrow</small></span>
+                        <span class="nav-badge">PFI</span>
+                    </a>
+                    <a class="sidebar-link" href="video-verification.html">
+                        <span><strong>Video Verification</strong><small>Behavioral trust scan</small></span>
+                        <span class="nav-badge">AI</span>
+                    </a>
+                    <a class="sidebar-link" href="skill-test.html">
+                        <span><strong>Skill Test</strong><small>Micro validation</small></span>
+                        <span class="nav-badge">96</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-card">
+                <div class="eyebrow">Problem Statement Fit</div>
+                <h3>Professional Fidelity Index</h3>
+                <p>The wallet now merges escrow state, reputation score, completed projects, skill validation, and behavioral analysis into one credibility view.</p>
+            </div>
+        </aside>
+
+        <main class="app-main">
+            <header class="app-topbar">
+                <div class="app-title">
+                    <span>Professional Fidelity Index</span>
+                    <h1>Trust Wallet</h1>
+                </div>
+
+                <div class="toolbar">
+                    <a class="button-ghost" href="freelancer-profile.html">Open Profile</a>
+                    <a class="button-ghost" href="skill-test.html">Run Skill Test</a>
+                    <a class="button-dark" href="video-verification.html">Run Call Scan</a>
+                </div>
+            </header>
+
+            <section class="app-hero">
+                <div>
+                    <div class="eyebrow">Trust Ledger</div>
+                    <h3 class="section-title">LinkedIn credibility, GitHub proof, escrow intelligence.</h3>
+                    <p class="hero-lead">
+                        This wallet surfaces the freelancer's Trust Score, projects completed, reliability index,
+                        escrow readiness, and the Professional Fidelity Index calculated from milestone accuracy,
+                        deadline adherence, autonomous QA, skill validation, and behavioral trust signals.
+                    </p>
+                </div>
+
+                <div class="hero-side-grid">
+                    <div class="hero-side-card">
+                        <span class="panel-label">Trust score</span>
+                        <strong id="trustScoreValue">94/100</strong>
+                        <p id="trustScoreNarrative">High credibility with strong milestone accuracy and payout reliability.</p>
+                    </div>
+                    <div class="hero-side-card">
+                        <span class="panel-label">PFI verdict</span>
+                        <strong id="pfiValue">91/100</strong>
+                        <p id="pfiNarrative">Professional Fidelity Index indicates a stable, low-friction contractor.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="kpi-grid">
+                <article class="kpi-card">
+                    <span>Projects Completed</span>
+                    <strong id="projectsCompletedValue">36</strong>
+                    <p>Completed projects contribute to reputation and payout confidence.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Reliability Index</span>
+                    <strong id="reliabilityIndexValue">92%</strong>
+                    <p>Combines deadline adherence, review quality, and responsiveness.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Escrow Protected</span>
+                    <strong id="escrowProtectedValue">$24.5K</strong>
+                    <p>Autonomous escrow and liquidity management for active milestones.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Verified Badge Status</span>
+                    <strong id="badgeStatusValue">Pending</strong>
+                    <p id="badgeStatusText">Run the skill validation test to issue a verified skill badge.</p>
+                </article>
+            </section>
+
+            <section class="wallet-visual-grid">
+                <article class="panel escrow-visual-card">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">Escrow Wallet Visualization</div>
+                            <p>Available balance, AI-held funds, and released value shown in one premium trust view.</p>
+                        </div>
+                        <span class="status-pill success">AI managed</span>
+                    </div>
+
+                    <div class="escrow-visual-shell">
+                        <div class="escrow-visual-side">
+                            <div class="escrow-ring-card">
+                                <span class="panel-label">Escrow Wallet</span>
+                                <div class="escrow-ring" id="escrowWalletRing">
+                                    <div class="escrow-ring-core">
+                                        <strong id="escrowWalletTotal">$2,400</strong>
+                                        <span>Total tracked</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="escrow-chip-row">
+                                <span class="escrow-chip">Protected payout flow</span>
+                                <span class="escrow-chip">AI release rules</span>
+                                <span class="escrow-chip">Trust-aware escrow</span>
+                            </div>
+                        </div>
+
+                        <div class="escrow-bar-list">
+                            <div class="escrow-bar-row">
+                                <div class="escrow-bar-head">
+                                    <span>Available Balance</span>
+                                    <strong id="escrowAvailableValue">$1,200</strong>
+                                </div>
+                                <div class="escrow-bar-track">
+                                    <span class="escrow-bar-fill safe" id="escrowAvailableBar" style="width: 50%;"></span>
+                                </div>
+                            </div>
+                            <div class="escrow-bar-row">
+                                <div class="escrow-bar-head">
+                                    <span>Held by AI</span>
+                                    <strong id="escrowHeldValue">$450</strong>
+                                </div>
+                                <div class="escrow-bar-track">
+                                    <span class="escrow-bar-fill warning" id="escrowHeldBar" style="width: 19%;"></span>
+                                </div>
+                            </div>
+                            <div class="escrow-bar-row">
+                                <div class="escrow-bar-head">
+                                    <span>Released</span>
+                                    <strong id="escrowReleasedValue">$750</strong>
+                                </div>
+                                <div class="escrow-bar-track">
+                                    <span class="escrow-bar-fill info" id="escrowReleasedBar" style="width: 31%;"></span>
+                                </div>
+                            </div>
+
+                            <div class="escrow-stat-grid">
+                                <article class="escrow-stat-card">
+                                    <span class="panel-label">Release readiness</span>
+                                    <strong id="escrowReleaseReadiness">High</strong>
+                                    <p id="escrowReleaseReadinessText">Protected funds can move once approval and trust checks align.</p>
+                                </article>
+                                <article class="escrow-stat-card">
+                                    <span class="panel-label">AI hold state</span>
+                                    <strong id="escrowHoldState">Watching</strong>
+                                    <p id="escrowHoldStateText">The AI hold logic protects funds when behavior or proof looks uncertain.</p>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section class="content-grid">
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Freelancer Profile</div>
+                                <p>Judges can see immediate credibility without leaving the payment flow.</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-card">
+                            <div class="profile-head">
+                                <div class="profile-avatar">AD</div>
+                                <div>
+                                    <h4>Arjun Dev</h4>
+                                    <p>Frontend engineer and product-minded freelancer</p>
+                                </div>
+                            </div>
+
+                            <div class="profile-metrics">
+                                <div class="profile-metric">
+                                    <span class="metric-caption">Trust Score</span>
+                                    <strong id="profileTrustScore">94</strong>
+                                </div>
+                                <div class="profile-metric">
+                                    <span class="metric-caption">Projects Completed</span>
+                                    <strong id="profileProjectsCompleted">36</strong>
+                                </div>
+                                <div class="profile-metric">
+                                    <span class="metric-caption">Reliability Index</span>
+                                    <strong id="profileReliabilityIndex">92%</strong>
+                                </div>
+                            </div>
+
+                            <div class="badge-row spaced" id="credibilityBadges">
+                                <span class="badge-tag success">Escrow eligible</span>
+                                <span class="badge-tag" id="skillBadgeChip">Skill badge pending</span>
+                                <span class="badge-tag" id="behaviorBadgeChip">Call scan not run</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">PFI Breakdown</div>
+                                <p>How the Professional Fidelity Index is calculated.</p>
+                            </div>
+                        </div>
+
+                        <div class="pfi-list">
+                            <div class="pfi-row">
+                                <header>
+                                    <strong>Milestone accuracy</strong>
+                                    <span class="pill-muted" id="milestoneAccuracyValue">93%</span>
+                                </header>
+                                <div class="bar-track"><span class="bar-fill safe" id="milestoneAccuracyFill"></span></div>
+                            </div>
+                            <div class="pfi-row">
+                                <header>
+                                    <strong>Deadline adherence</strong>
+                                    <span class="pill-muted" id="deadlineAdherenceValue">90%</span>
+                                </header>
+                                <div class="bar-track"><span class="bar-fill safe" id="deadlineAdherenceFill"></span></div>
+                            </div>
+                            <div class="pfi-row">
+                                <header>
+                                    <strong>Autonomous QA consistency</strong>
+                                    <span class="pill-muted" id="aqaConsistencyValue">91%</span>
+                                </header>
+                                <div class="bar-track"><span class="bar-fill safe" id="aqaConsistencyFill"></span></div>
+                            </div>
+                            <div class="pfi-row">
+                                <header>
+                                    <strong>Skill validation</strong>
+                                    <span class="pill-muted" id="skillValidationValue">Pending</span>
+                                </header>
+                                <div class="bar-track"><span class="bar-fill warning" id="skillValidationFill"></span></div>
+                            </div>
+                            <div class="pfi-row">
+                                <header>
+                                    <strong>Behavioral trust scan</strong>
+                                    <span class="pill-muted" id="behavioralTrustValue">Not run</span>
+                                </header>
+                                <div class="bar-track"><span class="bar-fill warning" id="behavioralTrustFill"></span></div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Trust Over Time</div>
+                                <p>Show judges how trust and PFI evolve instead of freezing as one number.</p>
+                            </div>
+                        </div>
+
+                        <div class="trend-chart" id="walletTrustHistory"></div>
+                    </article>
+                </div>
+
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Escrow and Liquidity Snapshot</div>
+                                <p>Financial integrity stays visible next to credibility scoring.</p>
+                            </div>
+                        </div>
+
+                        <div class="analysis-grid">
+                            <div class="ledger-card">
+                                <h4>Total protected balance</h4>
+                                <span class="metric-number">$24,500</span>
+                                <p>Locked against live milestones across current contracts.</p>
+                            </div>
+                            <div class="ledger-card">
+                                <h4>Ready for micro-payout</h4>
+                                <span class="metric-number">$7,000</span>
+                                <p>Can be released when autonomous quality and trust checks clear.</p>
+                            </div>
+                            <div class="ledger-card">
+                                <h4>Awaiting AQA</h4>
+                                <span class="metric-number">$11,200</span>
+                                <p>Pending automated quality assurance or client confirmation.</p>
+                            </div>
+                            <div class="ledger-card">
+                                <h4>On trust hold</h4>
+                                <span class="metric-number" id="trustHoldValue">$1,650</span>
+                                <p id="trustHoldSummary">Held until behavior and delivery confidence reach safe thresholds.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">AI Decision Log</div>
+                                <p>Prediction factors and audit entries behind the current wallet posture.</p>
+                            </div>
+                        </div>
+
+                        <div class="factor-list" id="walletPredictionFactors"></div>
+                        <div class="audit-log-list spaced" id="walletAuditLog"></div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Autonomous Trust Events</div>
+                                <p>Signals collected from the wallet, skill validation, and video calls.</p>
+                            </div>
+                        </div>
+
+                        <ul class="transcript-list" id="walletEvents">
+                            <li>
+                                <strong>PFI initialized</strong>
+                                Base score started from completed projects, payout history, and milestone accuracy.
+                            </li>
+                            <li>
+                                <strong>Skill validation pending</strong>
+                                No verified skill badge has been issued yet for the current freelancer.
+                            </li>
+                            <li>
+                                <strong>Behavioral scan pending</strong>
+                                No commitment-risk result has been logged from the latest call.
+                            </li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <footer class="app-footer">
+                <div>
+                    <strong>TrustFlow AI</strong>
+                    <p>The Trust Wallet converts skill validation, video behavior, delivery consistency, and escrow state into one usable credibility layer.</p>
+                </div>
+                <div class="app-footer-links">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="freelancer-profile.html">Freelancer Profile</a>
+                    <a href="skill-test.html">Skill Test</a>
+                    <a href="video-verification.html">Verification</a>
+                    <a href="project-room.html">Project Room</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui-shell.js"></script>
+    <script src="js/trust-score.js"></script>
+</body>
+
+</html>

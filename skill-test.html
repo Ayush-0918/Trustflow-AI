@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Test - TrustFlow AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="app-sidebar">
+            <div>
+                <div class="sidebar-head">
+                    <div class="brand-lockup">
+                        <span class="brand-glyph" aria-hidden="true">
+                            <span class="square"></span>
+                            <span class="circle"></span>
+                            <span class="triangle"></span>
+                        </span>
+                        <div>
+                            <div class="brand-wordmark">TrustFlow AI</div>
+                            <p>Autonomous AI intermediary</p>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a class="sidebar-link" href="dashboard.html">
+                        <span><strong>Dashboard</strong><small>Live project command</small></span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                    <a class="sidebar-link" href="project-create.html">
+                        <span><strong>Create Project</strong><small>Requirement analysis</small></span>
+                        <span class="nav-badge">AI</span>
+                    </a>
+                    <a class="sidebar-link" href="project-room.html">
+                        <span><strong>Project Room</strong><small>Automated QA workflow</small></span>
+                        <span class="nav-badge">03</span>
+                    </a>
+                    <a class="sidebar-link" href="trust-wallet.html">
+                        <span><strong>Trust Wallet</strong><small>PFI and escrow</small></span>
+                        <span class="nav-badge">$</span>
+                    </a>
+                    <a class="sidebar-link" href="video-verification.html">
+                        <span><strong>Video Verification</strong><small>Behavioral trust scan</small></span>
+                        <span class="nav-badge">AI</span>
+                    </a>
+                    <a class="sidebar-link active" href="skill-test.html">
+                        <span><strong>Skill Test</strong><small>Micro validation</small></span>
+                        <span class="nav-badge">PFI</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-card">
+                <div class="eyebrow">Hackathon Edge</div>
+                <h3>AI skill validation test</h3>
+                <p>Freelancers can be challenged with project-specific micro-tasks before they earn a verified skill badge.</p>
+            </div>
+        </aside>
+
+        <main class="app-main">
+            <header class="app-topbar">
+                <div class="app-title">
+                    <span>Micro validation engine</span>
+                    <h1>Skill Test</h1>
+                </div>
+
+                <div class="toolbar">
+                    <a class="button-ghost" href="dashboard.html">Back to Dashboard</a>
+                    <a class="button-dark" href="trust-wallet.html">See PFI Impact</a>
+                </div>
+            </header>
+
+            <section class="app-hero">
+                <div>
+                    <div class="eyebrow">AI Skill Validation</div>
+                    <h3 class="section-title">Test the skill before the freelancer gets the project.</h3>
+                    <p class="hero-lead">
+                        For coding, design, or strategy work, TrustFlow can issue a quick AI micro-test. Passing it earns
+                        a verified skill badge and improves payout confidence inside the Trust Wallet.
+                    </p>
+                </div>
+
+                <div class="hero-side-grid">
+                    <div class="hero-side-card">
+                        <span class="panel-label">Current project type</span>
+                        <strong id="challengeTypeLabel">Frontend development</strong>
+                        <p id="challengeTypeHint">Three fast questions focused on UI reliability and implementation judgment.</p>
+                    </div>
+                    <div class="hero-side-card">
+                        <span class="panel-label">Badge status</span>
+                        <strong id="badgeStatusCard">Pending</strong>
+                        <p id="badgeStatusHint">Run the micro-test to award a verified skill badge.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="kpi-grid">
+                <article class="kpi-card">
+                    <span>Micro-tests issued</span>
+                    <strong>124</strong>
+                    <p>Used before project acceptance to reduce skill mismatch.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Verification rate</span>
+                    <strong id="verificationRateCard">0%</strong>
+                    <p>Updates once the candidate completes the challenge set.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Skill score</span>
+                    <strong id="skillScoreCard">--</strong>
+                    <p>Weighted from correctness, clarity, and project-fit.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>PFI uplift</span>
+                    <strong id="pfiBoostCard">+0</strong>
+                    <p>Passing the test improves the Professional Fidelity Index.</p>
+                </article>
+            </section>
+
+            <section class="content-grid">
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Project-Based Micro Test</div>
+                                <p>The challenge changes based on the type of work being accepted.</p>
+                            </div>
+                        </div>
+
+                        <div class="context-card">
+                            <div class="field">
+                                <label for="challengeType">Project type</label>
+                                <select id="challengeType">
+                                    <option value="development">Frontend development</option>
+                                    <option value="design">UI and product design</option>
+                                    <option value="strategy">Product strategy</option>
+                                </select>
+                            </div>
+                            <p class="helper-note" id="challengeIntro">
+                                TrustFlow will generate a focused micro-test and score whether the candidate is ready
+                                for this type of project.
+                            </p>
+                        </div>
+
+                        <form id="skillValidationForm" class="challenge-list spaced">
+                            <div id="challengeList"></div>
+                            <div class="button-row">
+                                <button class="button-dark" type="submit">Run AI Skill Validation</button>
+                                <button class="button-ghost" type="button" id="loadDesignDemo">Load Design Demo</button>
+                            </div>
+                        </form>
+                    </article>
+                </div>
+
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Validation Result</div>
+                                <p>What the AI decides after the micro-test is complete.</p>
+                            </div>
+                        </div>
+
+                        <div class="result-card" id="skillResultCard">
+                            <div class="badge-row">
+                                <span class="badge-tag warning" id="skillResultBadge">Badge pending</span>
+                                <span class="badge-tag" id="skillResultRole">Project-fit unknown</span>
+                            </div>
+                            <span class="result-score" id="skillResultScore">--</span>
+                            <h4 id="skillResultTitle">No assessment completed yet</h4>
+                            <p id="skillResultSummary">Select a project type, answer the micro-test, and the AI will decide whether a verified badge should be awarded.</p>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Why This Matters</div>
+                                <p>How the feature strengthens the hackathon story.</p>
+                            </div>
+                        </div>
+
+                        <ul class="check-list">
+                            <li>Coding projects can trigger mini implementation or debugging tasks.</li>
+                            <li>Design projects can trigger quick UI judgment and hierarchy checks.</li>
+                            <li>Passing the test awards a verified skill badge that feeds the PFI.</li>
+                            <li>Failed tests reduce blind trust before any contract is accepted.</li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <footer class="app-footer">
+                <div>
+                    <strong>TrustFlow AI</strong>
+                    <p>AI micro-tests reduce blind trust before project acceptance and push verified skill signals into the wallet profile.</p>
+                </div>
+                <div class="app-footer-links">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="project-room.html">Project Room</a>
+                    <a href="video-verification.html">Verification</a>
+                    <a href="trust-wallet.html">Trust Wallet</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui-shell.js"></script>
+    <script src="js/skill-test.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Room - TrustFlow AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="app-sidebar">
+            <div>
+                <div class="sidebar-head">
+                    <div class="brand-lockup">
+                        <span class="brand-glyph" aria-hidden="true">
+                            <span class="square"></span>
+                            <span class="circle"></span>
+                            <span class="triangle"></span>
+                        </span>
+                        <div>
+                            <div class="brand-wordmark">TrustFlow AI</div>
+                            <p>Premium trust workspace</p>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a class="sidebar-link" href="dashboard.html">
+                        <span><strong>Dashboard</strong><small>Live project command</small></span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                    <a class="sidebar-link" href="project-create.html">
+                        <span><strong>Create Project</strong><small>Scope and milestone design</small></span>
+                        <span class="nav-badge">AI</span>
+                    </a>
+                    <a class="sidebar-link active" href="project-room.html">
+                        <span><strong>Project Room</strong><small>Delivery workspace</small></span>
+                        <span class="nav-badge">03</span>
+                    </a>
+                    <a class="sidebar-link" href="trust-wallet.html">
+                        <span><strong>Trust Wallet</strong><small>Escrow protection</small></span>
+                        <span class="nav-badge">$</span>
+                    </a>
+                    <a class="sidebar-link" href="video-verification.html">
+                        <span><strong>Verification</strong><small>Identity and liveness</small></span>
+                        <span class="nav-badge">04</span>
+                    </a>
+                    <a class="sidebar-link" href="skill-test.html">
+                        <span><strong>Skill Test</strong><small>Capability confidence</small></span>
+                        <span class="nav-badge">96</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-card">
+                <div class="eyebrow">Room Status</div>
+                <h3>Helio Metrics Dashboard</h3>
+                <p>Two milestones active, one awaiting client sign-off, escrow fully funded for the next stage.</p>
+            </div>
+        </aside>
+
+        <main class="app-main">
+            <header class="app-topbar">
+                <div class="app-title">
+                    <span>Project room</span>
+                    <h1 id="projectRoomTitle">Helio Metrics Dashboard</h1>
+                </div>
+
+                <div class="toolbar">
+                    <a class="button-ghost" href="dashboard.html">Back to Dashboard</a>
+                    <a class="button-dark" href="trust-wallet.html">Review Escrow</a>
+                    <a class="button-ghost" href="video-call.html">Open Live Call</a>
+                </div>
+            </header>
+
+            <section class="app-hero">
+                <div>
+                    <div class="eyebrow">Active Delivery</div>
+                    <h3 class="section-title">Everything needed to ship and get paid.</h3>
+                    <p class="hero-lead">
+                        Files, approvals, milestone status, conversation, and release readiness now live in one clean
+                        premium room.
+                    </p>
+                </div>
+
+                <div class="hero-side-grid">
+                    <div class="hero-side-card">
+                        <span class="panel-label">Budget committed</span>
+                        <strong id="projectRoomBudget">$8,500</strong>
+                        <p id="projectRoomBudgetText">Full project value protected across staged releases.</p>
+                    </div>
+                    <div class="hero-side-card">
+                        <span class="panel-label">Next release</span>
+                        <strong id="projectRoomNextRelease">$2,800</strong>
+                        <p id="projectRoomNextReleaseText">Waiting on final client approval for milestone two.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="kpi-grid">
+                <article class="kpi-card">
+                    <span>Milestones complete</span>
+                    <strong id="projectRoomMilestoneCount">02 / 04</strong>
+                    <p id="projectRoomMilestoneText">Discovery and frontend design work have already cleared review.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Assets shared</span>
+                    <strong id="projectRoomAssetsShared">16</strong>
+                    <p id="projectRoomAssetsText">Design files, walkthroughs, test captures, and release notes are attached.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Approvals pending</span>
+                    <strong id="projectRoomApprovalsPending">01</strong>
+                    <p id="projectRoomApprovalsText">One client approval is blocking the next payout.</p>
+                </article>
+                <article class="kpi-card">
+                    <span>Room confidence</span>
+                    <strong id="projectRoomConfidence">88%</strong>
+                    <p id="projectRoomConfidenceText">High signal that the project will close without dispute.</p>
+                </article>
+            </section>
+
+            <section class="content-grid">
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Milestone Board</div>
+                                <p>Track where work stands before any funds move.</p>
+                            </div>
+                        </div>
+
+                        <div class="board-grid">
+                            <div class="board-column">
+                                <h4>Planned</h4>
+                                <div class="feature-list" id="projectBoardPlanned"></div>
+                            </div>
+
+                            <div class="board-column">
+                                <h4>In Review</h4>
+                                <div class="feature-list" id="projectBoardReview"></div>
+                            </div>
+
+                            <div class="board-column">
+                                <h4>Released</h4>
+                                <div class="feature-list" id="projectBoardReleased"></div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Shared Assets</div>
+                                <p>Files and proof artifacts supporting review decisions.</p>
+                            </div>
+                        </div>
+
+                        <div class="asset-list" id="projectAssets"></div>
+                    </article>
+                </div>
+
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">People in the Room</div>
+                                <p>Who is working, approving, and verifying.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-list" id="projectPeople"></div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Discussion</div>
+                                <p>Latest context between client and freelancer.</p>
+                            </div>
+                        </div>
+
+                        <div class="message-thread" id="projectMessages"></div>
+                        <form class="form-stack spaced" id="projectMessageForm">
+                            <div class="field">
+                                <label for="projectMessageInput">Add room message</label>
+                                <textarea id="projectMessageInput" placeholder="Share delivery proof, approval context, or a milestone update."></textarea>
+                            </div>
+                            <button class="button-dark" type="submit">Send Message</button>
+                            <p class="helper-note" id="projectMessageStatus">Messages are stored through the live backend room API.</p>
+                        </form>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Room Events</div>
+                                <p>Approval and verification history.</p>
+                            </div>
+                        </div>
+
+                        <div class="activity-list" id="projectEvents"></div>
+                    </article>
+                </div>
+            </section>
+
+            <footer class="app-footer">
+                <div>
+                    <strong>TrustFlow AI</strong>
+                    <p>The project room centralizes scope, files, discussion, events, and approval proof into one transparent workspace.</p>
+                </div>
+                <div class="app-footer-links">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="project-create.html">Create Project</a>
+                    <a href="video-call.html">Live Call</a>
+                    <a href="trust-wallet.html">Trust Wallet</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui-shell.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+
+</html>

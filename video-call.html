@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Video Call - TrustFlow AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="page-shell">
+        <header class="site-header">
+            <a class="site-brand" href="dashboard.html">
+                <span class="brand-glyph" aria-hidden="true">
+                    <span class="square"></span>
+                    <span class="circle"></span>
+                    <span class="triangle"></span>
+                </span>
+                <span>
+                    <strong class="brand-wordmark">TrustFlow AI</strong>
+                    <span class="brand-caption">Live behavioral verification</span>
+                </span>
+            </a>
+
+            <nav class="site-nav">
+                <a class="nav-pill" href="dashboard.html">Dashboard</a>
+                <a class="nav-pill" href="project-room.html">Project Room</a>
+                <a class="nav-pill" href="video-verification.html">Verification</a>
+                <a class="nav-pill highlight" href="trust-wallet.html">Trust Wallet</a>
+            </nav>
+
+            <div class="site-header-utility"></div>
+
+            <div class="header-actions">
+                <a class="button-ghost" href="video-verification.html">Back to Verification</a>
+                <a class="button-dark" href="trust-wallet.html">Open Trust Wallet</a>
+            </div>
+        </header>
+
+        <section class="section" style="padding-top: 12px;">
+            <div class="section-head" style="text-align: left; margin: 0 0 28px;">
+                <div class="eyebrow">Dual Screen Call Demo</div>
+                <h1 class="section-title" id="liveCallProjectTitle">TrustFlow Live Call</h1>
+                <p class="section-subtitle" style="margin-left: 0;">
+                    Employer and freelancer stay on one screen while the AI intermediary watches confidence,
+                    expressions, commitment, and payout risk in real time.
+                </p>
+            </div>
+
+            <div class="split-grid call-layout-grid">
+                <article class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">Video Room</div>
+                            <p>Client camera and freelancer camera stay live while the AI trust layer watches the conversation.</p>
+                        </div>
+                        <span class="video-live-chip">Live session</span>
+                    </div>
+
+                    <div class="video-stage-grid">
+                        <div class="video-feed-card">
+                            <div class="video-feed-header">
+                                <div>
+                                    <h4 id="employerName">Jane Smith</h4>
+                                    <p id="employerRole">Employer</p>
+                                </div>
+                                <div class="feed-status-stack">
+                                    <span class="pill-muted">Host</span>
+                                    <span class="talk-state" id="clientTalkState">Listening</span>
+                                </div>
+                            </div>
+                            <div class="camera-stage" id="clientCameraStage">
+                                <video class="camera-video" id="clientCamera" autoplay muted playsinline></video>
+                                <div class="camera-fallback">
+                                    <div class="video-avatar">JS</div>
+                                </div>
+                                <div class="camera-overlay">
+                                    <span class="camera-badge safe" id="clientConnectionState">Client camera</span>
+                                    <div class="voice-bars" aria-hidden="true">
+                                        <span></span><span></span><span></span><span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="video-feed-meta" id="clientFeedMeta">
+                                Reviewing delivery proof, milestone clarity, and release readiness.
+                            </div>
+                        </div>
+
+                        <div class="video-feed-card remote-feed-card">
+                            <div class="video-feed-header">
+                                <div>
+                                    <h4 id="freelancerName">Arjun Dev</h4>
+                                    <p id="freelancerRole">Freelancer</p>
+                                </div>
+                                <div class="feed-status-stack">
+                                    <span class="pill-muted">Participant</span>
+                                    <span class="talk-state" id="freelancerTalkState">Talking</span>
+                                </div>
+                            </div>
+                            <div class="camera-stage" id="freelancerCameraStage">
+                                <video class="camera-video camera-video-remote" id="freelancerCamera" autoplay muted playsinline></video>
+                                <div class="camera-fallback">
+                                    <div class="video-avatar">AD</div>
+                                </div>
+                                <div class="camera-overlay">
+                                    <span class="camera-badge warning" id="freelancerConnectionState">Freelancer camera</span>
+                                    <div class="voice-bars" aria-hidden="true">
+                                        <span></span><span></span><span></span><span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="video-feed-meta" id="freelancerFeedMeta">
+                                Responding to deadline, scope, and commitment questions from the employer.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-row spaced">
+                        <button class="button-dark" id="callModeSuspicious" type="button">Trigger Suspicious Behavior</button>
+                        <button class="button-ghost" id="callModeWarning" type="button">Trigger Warning Behavior</button>
+                        <button class="button-ghost" id="callModeHealthy" type="button">Trigger Healthy Behavior</button>
+                    </div>
+                </article>
+
+                <div class="stack">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Live Call Trust Level</div>
+                                <p>Green means safe, yellow means warning, and red means risk.</p>
+                            </div>
+                            <span class="video-live-chip">Trust live</span>
+                        </div>
+
+                        <div class="trust-meter-grid">
+                            <div class="trust-meter-card">
+                                <div class="trust-ring safe" id="liveTrustRing" style="--progress: 94;">
+                                    <div class="trust-ring-core">
+                                        <span class="trust-ring-label">Trust Level</span>
+                                        <strong id="liveTrustMeterScore">94 / 100</strong>
+                                        <small id="liveTrustTier">Elite Freelancer</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="risk-system-card">
+                                <span class="panel-label">AI Risk Alert System</span>
+                                <h3 id="liveRiskSystemTitle">TrustFlow is listening for commitment risk.</h3>
+                                <p id="liveRiskSystemBody">The system updates trust state, payout posture, and wallet confidence after each call turn.</p>
+                                <div class="meter-legend">
+                                    <span class="legend-pill safe">Safe</span>
+                                    <span class="legend-pill warning">Warning</span>
+                                    <span class="legend-pill danger">Risk</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">AI Trust Verdict</div>
+                                <p>The autonomous AI intermediary decides whether escrow should proceed or hold.</p>
+                            </div>
+                            <span class="badge-tag warning" id="liveRiskBadge">Pending</span>
+                        </div>
+
+                        <div class="alert-banner warning">
+                            <h4 id="liveWarningTitle">TrustFlow is listening for live commitment signals.</h4>
+                            <p id="liveWarningText">Run one of the scenarios to watch the trust system update the wallet view.</p>
+                        </div>
+
+                        <div class="analysis-grid spaced">
+                            <div class="analysis-card">
+                                <h4>Voice stress</h4>
+                                <span class="metric-number" id="liveSignalVoice">--</span>
+                            </div>
+                            <div class="analysis-card">
+                                <h4>Facial consistency</h4>
+                                <span class="metric-number" id="liveSignalFace">--</span>
+                            </div>
+                            <div class="analysis-card">
+                                <h4>Confidence level</h4>
+                                <span class="metric-number" id="liveSignalConfidence">--</span>
+                            </div>
+                            <div class="analysis-card">
+                                <h4>Commitment signal</h4>
+                                <span class="metric-number" id="liveSignalCommitment">--</span>
+                            </div>
+                        </div>
+
+                        <div class="analysis-grid spaced">
+                            <div class="ledger-card">
+                                <h4>Escrow action</h4>
+                                <span class="metric-number" id="liveEscrowAction">--</span>
+                            </div>
+                            <div class="ledger-card">
+                                <h4>Trust score</h4>
+                                <span class="metric-number" id="liveTrustScore">--</span>
+                            </div>
+                            <div class="ledger-card">
+                                <h4>PFI</h4>
+                                <span class="metric-number" id="livePFI">--</span>
+                            </div>
+                            <div class="ledger-card">
+                                <h4>Trust hold</h4>
+                                <span class="metric-number" id="liveTrustHold">--</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">Trust Activity</div>
+                                <p>Call events that feed the trust engine in real time.</p>
+                            </div>
+                        </div>
+
+                        <div class="trust-timeline-list" id="liveTrustActivity"></div>
+                    </article>
+                </div>
+            </div>
+
+            <div class="split-grid spaced">
+                <article class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">Call Transcript</div>
+                            <p>Proof that the behavioral layer is tied to conversation context.</p>
+                        </div>
+                    </div>
+
+                    <ul class="transcript-list" id="liveTranscript"></ul>
+                </article>
+
+                <article class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">Why This Sells in the Demo</div>
+                            <p>The judges can see the AI intermediary acting as a neutral trust bridge.</p>
+                        </div>
+                    </div>
+
+                    <ul class="check-list">
+                        <li>Both employer and freelancer are visible in the same live call surface.</li>
+                        <li>Behavioral analysis is tied to escrow action instead of staying ornamental.</li>
+                        <li>The result flows into the wallet and PFI so the system feels connected.</li>
+                        <li>The same data can be shown as a polished demo or extended into a real workflow.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <footer class="site-footer">
+            <div class="footer-brand">
+                <a class="site-brand" href="dashboard.html">
+                    <span class="brand-glyph" aria-hidden="true">
+                        <span class="square"></span>
+                        <span class="circle"></span>
+                        <span class="triangle"></span>
+                    </span>
+                    <span>
+                        <strong class="brand-wordmark">TrustFlow AI</strong>
+                        <span class="brand-caption">Dual-screen call demo</span>
+                    </span>
+                </a>
+                <p>The call screen keeps both sides visible while the AI intermediary updates escrow action, trust score, and PFI live.</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="project-room.html">Project Room</a>
+                <a href="video-verification.html">Verification</a>
+                <a href="trust-wallet.html">Trust Wallet</a>
+            </div>
+
+            <div class="footer-note">
+                <strong>Hackathon Ready</strong>
+                <span>Behavioral analysis is visible, explainable, and connected to the wallet instead of staying cosmetic.</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui-shell.js"></script>
+    <script src="js/video-call.js"></script>
+</body>
+
+</html>
