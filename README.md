@@ -1,7 +1,5 @@
 <div align="center">
-  <img src="https://dummyimage.com/150x150/000000/22d3ee.png&text=TrustFlow+AI"
-     alt="TrustFlow AI Logo"
-     width="120">
+  <img src="https://dummyimage.com/150x150/000000/22d3ee.png&text=TrustFlow+AI" alt="TrustFlow AI Logo" width="120">
   <h1>🌐 TrustFlow AI</h1>
   <p><strong>The First Cryptographically Secure, AI-Governed Freelance Economy</strong></p>
 
@@ -11,6 +9,7 @@
   [![Groq](https://img.shields.io/badge/Groq-LPU_Inference-f35f21?style=for-the-badge)](https://groq.com)
   [![Stripe](https://img.shields.io/badge/Stripe-Connect-6772E5?style=for-the-badge&logo=stripe)](https://stripe.com)
   [![Socket.IO](https://img.shields.io/badge/Socket.IO-Real_Time-black?style=for-the-badge&logo=socket.io)](https://socket.io/)
+  [![Resend](https://img.shields.io/badge/Resend-Email_API-black?style=for-the-badge)](https://resend.com/)
 </div>
 
 <br/>
@@ -32,23 +31,22 @@ Instead of human project managers arguing over timelines, TrustFlow uses a **Cre
 
 ### 🛡️ 2. Immutable Escrow Vaults (Stripe Connect)
 We don't do "fake" hackathon payments. TrustFlow integrates a real **Stripe Escrow Architecture**. 
-- Clients deposit funds directly into a secure Stripe Vault (`paymentAPI.createSession`).
-- Freelancers link their bank accounts via Stripe Connect (`paymentAPI.createConnectAccount`).
+- Clients deposit funds directly into a secure Stripe Vault.
 - Funds are mathematically locked and auto-released via Webhook listeners when milestones are completed.
 
 ### ⚡ 3. Zero-Latency Real-Time Comms (FastAPI + Socket.IO)
 No more refreshing the page to see messages. We built a native **ASGI WebSocket server** directly into the Python backend.
 - End-to-end real-time chat within project rooms.
 - Live typing indicators (`"Anonymous Node is typing..."`).
-- Secure JWT authentication on socket connection to prevent unauthorized packet sniffing.
 
-### 👁️ 4. Cryptographic Biometric Identity (Twilio + Cloudinary)
-To combat bots and bad actors:
+### 👁️ 4. Cryptographic Identity & Notifications
+To combat bots, bad actors, and ensure seamless communication:
 - **Twilio SMS OTP:** Hard-verifies user phone numbers globally.
+- **Resend Email API:** Delivers beautiful transactional HTML emails for milestone updates and escrow deposits.
 - **Cloudinary:** Secure media upload pipelines for portfolio verification and deep-fake checks.
 
-### 🎨 5. 60FPS Cyberpunk UI (Framer Motion + GSAP)
-The UI is a visual masterpiece. Built using **TailwindCSS, GSAP, and Framer Motion**, the interface features glassmorphism, WebGL animated backgrounds, and interactive spotlight cards that feel like a high-end crypto trading terminal.
+### 🎨 5. 60FPS Cyberpunk UI (Tailwind + Framer Motion)
+The UI is a visual masterpiece. Built using **TailwindCSS and Framer Motion**, the interface features glassmorphism, animated backgrounds, and interactive spotlight cards that feel like a high-end crypto trading terminal.
 
 ---
 
@@ -56,7 +54,7 @@ The UI is a visual masterpiece. Built using **TailwindCSS, GSAP, and Framer Moti
 
 ```mermaid
 graph TD
-    Client[Next.js Client UI] <--> |REST API| FastAPI[FastAPI Backend]
+    Client[Next.js 14 Client UI] <--> |REST API| FastAPI[FastAPI Backend]
     Client <--> |WebSockets wss://| SocketIO[ASGI Socket Server]
     
     FastAPI <--> |LPU Inference| Groq[Groq API / Llama3]
@@ -67,37 +65,15 @@ graph TD
     Stripe -.-> |Webhooks| FastAPI
     
     FastAPI <--> |SMS Auth| Twilio[Twilio API]
+    FastAPI <--> |Transactional Email| Resend[Resend API]
     Client <--> |Media Upload| Cloudinary[Cloudinary CDN]
-```
-
----
-
-## 🛠️ Project Structure
-
-```text
-TrustFlow-AI/
-├── backend/                  # Python FastAPI Backend
-│   ├── app/
-│   │   ├── api/v1/endpoints/ # API Routes (ai, projects, wallet, auth, webhooks)
-│   │   ├── core/             # Security (JWT) & Config
-│   │   ├── db/               # Async SQLAlchemy Setup & Migrations
-│   │   ├── models/           # Database Schemas
-│   │   └── services/         # CrewAI, Escrow, SMS logic
-│   └── main.py               # Entry point & Socket.IO server
-│
-├── src/                      # Next.js 14 Frontend
-│   ├── app/                  # App Router pages (projects, wallet, profile, ai-planner)
-│   ├── components/           # UI Elements (GSAP + Framer Motion)
-│   ├── hooks/                # Custom React Hooks (useSocket)
-│   ├── lib/                  # Axios Interceptors & API Client
-│   └── store/                # Zustand Global State
 ```
 
 ---
 
 ## 🚀 Local Development Setup
 
-To run this platform on your own machine, you must spin up both the Backend and Frontend servers.
+To run this platform locally, you must spin up both the Backend and Frontend servers.
 
 ### 1️⃣ Clone the Repository
 ```bash
@@ -108,18 +84,13 @@ cd Trustflow-AI
 ### 2️⃣ Initialize the FastAPI Backend
 ```bash
 cd backend
-
-# Create a virtual environment
 python3 -m venv .venv
-source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+source .venv/bin/activate
 
-# Install heavy dependencies
 pip install -r requirements.txt
-
-# Create Environment Variables
-touch .env
 ```
-Inside your `backend/.env` file, you **must** supply your own keys:
+
+Create a `backend/.env` file with your keys:
 ```env
 # AI
 GROQ_API_KEY=gsk_your_key_here
@@ -128,10 +99,11 @@ GROQ_API_KEY=gsk_your_key_here
 STRIPE_SECRET_KEY=sk_test_your_key_here
 STRIPE_WEBHOOK_SECRET=whsec_your_key_here
 
-# Verification
+# Verification & Notifications
 TWILIO_ACCOUNT_SID=your_sid
 TWILIO_AUTH_TOKEN=your_token
-TWILIO_PHONE_NUMBER=+1234567890
+TWILIO_FROM_NUMBER=+1234567890
+RESEND_API_KEY=re_your_key_here
 CLOUDINARY_URL=cloudinary://key:secret@cloud
 
 # Database
@@ -141,18 +113,14 @@ DATABASE_URL=sqlite+aiosqlite:///./trustflow.db
 ```bash
 uvicorn app.main:app --reload
 ```
-*Backend is now running at `http://localhost:8000`*
+*Backend runs at `http://localhost:8000`*
 
 ### 3️⃣ Initialize the Next.js Frontend
-Open a new terminal at the root of the project:
 ```bash
-# Install Node dependencies
 npm install
-
-# Start the React Server
 npm run dev
 ```
-*Frontend is now running at `http://localhost:3000`*
+*Frontend runs at `http://localhost:3000`*
 
 ---
 
@@ -161,10 +129,11 @@ npm run dev
 When reviewing this project, make sure to test these specific flows to see the underlying technology in action:
 
 1. **The Groq Speed Test:** Navigate to `/ai-planner`. Type a project idea. Notice how the AI breaks it down into complex JSON phases in milliseconds, bypassing standard OpenAI latency.
-2. **The Socket.IO Room:** Open `/projects/1` in **two different browser tabs** (side-by-side). Type in the chat box on the right. Watch the live typing indicator and instant message broadcasting.
+2. **The Socket.IO Room:** Open a project workspace in **two different browser tabs** (side-by-side). Type in the chat box on the right to witness live typing indicators and instant message broadcasting.
 3. **The Webhook Ledger:** Go to `/wallet` and click "Deposit $1k". This routes you to Stripe. Notice how the frontend securely updates balances based on backend validation.
+4. **Resend Email Triggers:** Escrow deposits and milestone completions automatically trigger beautiful HTML emails via Resend.
 
 <br/>
 <div align="center">
-  <i>Engineered with passion for the Hackathon. 🚀</i>
+  <i>Engineered with passion. 🚀</i>
 </div>

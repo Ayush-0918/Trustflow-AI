@@ -1,111 +1,102 @@
 # TrustFlow AI - Project Overview & Blueprint
 
-This document is a comprehensive guide to **TrustFlow AI**, explaining exactly what the project is, what technologies are used, the current state of features, the directory structure, and a blueprint for future enhancements.
+This document provides a comprehensive guide to **TrustFlow AI**, explaining the current architecture, technologies used, and the complete directory structure.
 
 ---
 
 ## 1. Project Vision & Overview
-**TrustFlow AI** is an intelligent freelancer marketplace platform that integrates AI-powered features, Escrow payments, Skill testing, and Video-based Verification to build extreme trust between clients and freelancers. It aims to eliminate fraud and ensure high-quality delivery through automated trust scoring, video deep-fake detection, and smart escrow wallets.
+**TrustFlow AI** is a decentralized, AI-governed freelance marketplace. It integrates CrewAI-powered project roadmapping, Stripe Escrow payments, real-time messaging, and multi-factor verification (SMS + Biometric) to eliminate fraud and scope creep.
 
 ---
 
-## 2. Tech Stack & Materials Used (What is used in this)
+## 2. Tech Stack & Materials Used
 
-This project uses a split architecture (Vanilla Frontend + Python Backend):
+This project uses a modern decoupled architecture:
 
-### Frontend Stack (Client-Side)
-- **HTML5 & CSS3** - Core structure and styling (`style.css`), avoiding complex heavy frameworks for a fast, custom shell.
-- **Vanilla JavaScript (ES6)** - Modular scripts located in the `/js` folder handling API requests, routing, animations (`landing-effects.js`, `particles.js`), and WebRTC/Video logic (`video-call.js`).
+### Frontend Stack (Next.js App Router)
+- **Next.js 14** - React framework for production-grade SSR and API routes.
+- **Tailwind CSS & Framer Motion** - For complex, responsive, and animated UI components.
+- **Zustand** - Lightweight global state management.
+- **Axios** - HTTP client for interacting with the backend API.
+- **Socket.IO Client** - Real-time WebSocket connection for live project chat.
 
-### Backend Stack (Server-Side)
-- **Python 3** - Core backend language.
-- **Flask** - Lightweight web framework used for API routing and serving static files (`backend/app.py`).
-- **SQLite3** - Relational database (`trustflow_demo.sqlite3`) storing Users, Projects, Messages, and Payments.
-- **Custom Services Framework** - Mock AI models, escrow engines, and SMS services implemented in `services/`.
-
----
-
-## 3. Current State: What Has Been Built So Far?
-
-1. **Frontend Pages:**
-   - Landing Page (`index.html`) with particle effects.
-   - Authentication (`login.html`, `signup.html`).
-   - Dashboard (`dashboard.html`) showing projects and Trust Scores.
-   - Project Workspaces (`project-room.html`, `project-create.html`).
-   - Freelancer Profile (`freelancer-profile.html`).
-   - Escrow & Wallet (`escrow.html`, `trust-wallet.html`).
-   - Video Calling & Identity Verification (`video-call.html`, `video-verification.html`).
-   - Skill Testing (`skill-test.html`).
-2. **Backend API Features (`app.py`):**
-   - Authentication (Login/Signup/Me).
-   - Project Creation & Management (AI Project Planner integration).
-   - Real-time messaging endpoints for Project Rooms.
-   - Trust Prediction and Wallet Summary endpoints.
-   - Video session handling and Deep-fake/Suspicious behavior detection endpoints.
-   - Skills Evaluation endpoints.
+### Backend Stack (FastAPI Python)
+- **FastAPI** - High-performance asynchronous web framework.
+- **SQLAlchemy & SQLite/PostgreSQL** - Async ORM for handling relational data.
+- **Alembic** - Database schema migrations.
+- **Socket.IO (python-socketio)** - ASGI integration for real-time WebSocket communication.
+- **CrewAI & Groq** - Multi-agent AI engine using Groq LPUs for lightning-fast inference.
+- **Stripe API** - Escrow integration using Stripe Connect.
+- **Twilio & Resend APIs** - For OTP verification and transactional HTML emails.
+- **Cloudinary** - Secure media and asset uploading.
 
 ---
 
-## 4. Complete Directory Structure
+## 3. Complete Directory Structure
 
 ```text
-.
-├── backend/                  # Python Flask Backend
-│   ├── app.py                # Main Flask application and API routes
-│   ├── db.py                 # SQLite database connection and ORM queries
-│   ├── seed_users.py         # Script to populate mock database data
-│   ├── test_db.py            # Unit tests for the database
-│   ├── trustflow_demo.sqlite3# The local database file
-│   ├── models/               # Python models representing DB tables
-│   │   ├── milestone.py
-│   │   ├── payment.py
-│   │   ├── project.py
-│   │   └── user.py
-│   └── routes/               # API endpoint modules
-│       ├── auth.py
-│       ├── chat.py
-│       ├── payment.py
-│       ├── project.py
-│       └── video.py
-├── database/                 
-│   └── db.py                 # (Duplicate/Older DB logic - needs consolidation)
-├── js/                       # Vanilla JavaScript Frontend Logic
-│   ├── ai-detection.js       # AI analysis for video calls
-│   ├── aiPlanner.js          # AI project blueprint generation logic
-│   ├── api.js                # Core Fetch wrapper for API communication
-│   ├── auth.js               # Login/Signup handling
-│   ├── chat.js               # Realtime project messaging UI logic
-│   ├── dashboard.js          # Dashboard data fetching
-│   ├── escrow.js             # Milestone and payment UI logic
-│   ├── freelancer-profile.js # Profile management
-│   ├── i18n.js               # Internationalization logic
-│   ├── index.js              # General index logic
-│   ├── landing-effects.js    # UI animations
-│   ├── notification.js       # Toast notifications
-│   ├── particles.js          # Canvas particle background
-│   ├── skill-test.js         # Evaluation UI logic
-│   ├── trust-score.js        # Trust scoring UI logic
-│   ├── ui-shell.js           # Core layout wrapper logic
-│   └── video-call.js         # WebRTC/Video stream logic
-├── services/                 # Backend Services (AI, Escrow, SMS)
-│   ├── ai_service.py
-│   ├── escrow_engine.py
-│   └── sms_service.py
-├── style.css                 # Global CSS styles for the entire app
-└── *.html                    # All frontend HTML pages (index, login, dashboard, etc.)
+TrustFlow-AI/
+├── backend/                        # Python FastAPI Backend Environment
+│   ├── .venv/                      # Python Virtual Environment
+│   ├── alembic/                    # Database migrations configuration
+│   ├── alembic.ini
+│   ├── app/                        # Core Application Code
+│   │   ├── api/
+│   │   │   └── v1/
+│   │   │       ├── endpoints/      # API Routes (auth, projects, webhooks, etc.)
+│   │   │       └── router.py       # Main API router consolidation
+│   │   ├── core/
+│   │   │   ├── config.py           # Pydantic Settings
+│   │   │   └── security.py         # JWT Token, Password Hashing logic
+│   │   ├── db/
+│   │   │   ├── seed.py             # Script to populate mock database data
+│   │   │   └── session.py          # SQLAlchemy async engine setup
+│   │   ├── middleware/             # Custom ASGI middlewares (e.g., logging)
+│   │   ├── models.py               # SQLAlchemy Database Models
+│   │   ├── schemas/                # Pydantic validation schemas
+│   │   └── services/               # Core Business Logic
+│   │       ├── ai_service.py       # CrewAI & Groq inference logic
+│   │       ├── email_service.py    # Resend email templates and sending logic
+│   │       ├── escrow_service.py   # Stripe Connect API logic
+│   │       ├── sms_service.py      # Twilio OTP logic
+│   │       └── upload_service.py   # Cloudinary integration
+│   ├── main.py                     # FastAPI entry point & Socket.IO server initialization
+│   ├── requirements.txt            # Python dependencies
+│   └── trustflow.db                # Local SQLite database (git ignored)
+│
+├── src/                            # Next.js Frontend Codebase
+│   ├── app/                        # Next.js App Router Pages
+│   │   ├── ai-planner/             # AI Roadmapping Interface
+│   │   ├── auth/                   # Login & Registration flows
+│   │   ├── marketplace/            # Freelancer/Project discovery
+│   │   ├── profile/                # User profiles
+│   │   ├── projects/               # Project management & dynamic workspaces
+│   │   ├── wallet/                 # Stripe deposit/escrow UI
+│   │   ├── globals.css             # Tailwind base and custom animations
+│   │   ├── layout.tsx              # Root HTML wrapper and providers
+│   │   └── page.tsx                # Landing Page
+│   │
+│   ├── components/                 # Reusable UI Components
+│   │   ├── auth/
+│   │   ├── features/               # Complex feature components (e.g., ProjectChat)
+│   │   ├── layout/                 # Navbar, Footer
+│   │   └── ui/                     # Primitives (Buttons, SpotlightCards, Modals)
+│   │
+│   ├── hooks/                      # Custom React Hooks (useSocket)
+│   ├── lib/                        # Utilities (API Interceptors, class names)
+│   ├── store/                      # Zustand Stores (authStore.ts)
+│   └── types/                      # TypeScript global interfaces
+│
+├── public/                         # Static assets (images, icons)
+├── package.json                    # Node.js dependencies
+├── tailwind.config.js              # Tailwind theming configuration
+└── README.md                       # Main project documentation
 ```
 
 ---
 
-## 5. Guide for Future AI Assistants (How to Enhance & Redesign)
+## 4. Architectural Workflows
 
-If you are an AI reading this, here is how you can enhance the platform:
-
-1. **Database & Architecture Cleanup:**
-   - The backend logic is slightly duplicated between `backend/db.py` and `database/db.py`. Consolidate these into a clean ORM pattern (using SQLAlchemy if possible).
-2. **Frontend Modernization:**
-   - The frontend relies on separate HTML files and vanilla JS fetching. It works well, but for extreme scalability, you might consider migrating the heavy state logic (like `project-room.html`) into a modern framework component (like React/Vue) OR implement a lightweight component architecture using Web Components.
-3. **Connect Real AI APIs:**
-   - The `services/ai_service.py` currently uses mock responses for the Trust Prediction, Video Deepfake Detection, and Project Planner. These need to be connected to actual LLMs (like OpenAI/Google Gemini) and real computer vision APIs.
-4. **WebSocket Integration:**
-   - The chat system in `project-room.html` relies on HTTP polling. Implementing `Flask-SocketIO` would make messaging truly real-time.
+1. **AI Planning Flow:** User submits prompt -> Next.js calls `POST /api/v1/ai/planner` -> FastAPI delegates to `ai_service.py` (CrewAI) -> CrewAI orchestrates multiple agent roles -> Returns JSON roadmap.
+2. **Escrow Flow:** Client deposits funds -> Stripe triggers `POST /api/v1/webhooks/stripe/webhook` -> FastAPI validates signature in `webhooks.py` -> `escrow_service.py` locks funds in virtual ledger -> Updates Project Milestone status to "funded".
+3. **Chat Flow:** Frontend mounts `ProjectChat` component -> `useSocket` connects to FastAPI Socket.IO server via ASGI -> Users emit `send_message` events -> Server broadcasts to specific project rooms.
