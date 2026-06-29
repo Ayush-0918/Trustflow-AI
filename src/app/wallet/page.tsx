@@ -231,8 +231,8 @@ export default function WalletPage() {
   };
 
   // Derived values
-  const liquidBalance = wallet ? wallet.liquid_balance : 0;
-  const escrowBalance = wallet ? wallet.escrow_locked : 0;
+  const liquidBalance = wallet ? Number(wallet.balance) || 0 : 0;
+  const escrowBalance = wallet ? Number(wallet.pending_balance) || 0 : 0;
   const totalBalance  = liquidBalance + escrowBalance;
   const netEarnings   = EARNINGS.reduce((a, e) => a + e.amount, 0) - 492; // fees
 

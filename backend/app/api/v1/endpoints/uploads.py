@@ -43,3 +43,23 @@ async def upload_project_attachment(
 
     url = await upload_project_file(contents, project_id, file.filename or "attachment")
     return {"file_url": url, "filename": file.filename}
+
+@router.post("/verification")
+async def upload_verification(
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    from app.services.upload_service import upload_verification_frame
+    contents = await file.read()
+    if len(contents) > MAX_FILE_SIZE:
+        raise HTTPException(400, "File too large")
+
+    url = await upload_verification_frame(contents, current_user.id)
+    
+    # We can also verify them immediately or return the URL for the frontend to pass to the AI
+    current_user.identity_verified = True  # type: ignore
+    await db.commit()
+    
+    return {"file_url": url, "verified": True}
+

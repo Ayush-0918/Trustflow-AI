@@ -114,5 +114,20 @@ async def seed():
         print("  carol@demo.com  / demo1234  (freelancer)")
 
 
+        # Add Ayush
+        user_ayush = User(
+            email="ayushpandey10851@gmail.com",
+            username="ayush_hacker",
+            full_name="Ayush Pandey",
+            hashed_password=hash_password("12345678"),
+            role="freelancer",
+            is_verified=True,
+            identity_verified=True,
+            trust_score=99.9
+        )
+        db.add(user_ayush)
+        await db.commit()
+        print("Added Ayush!")
+
 if __name__ == "__main__":
     asyncio.run(seed())

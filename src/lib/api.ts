@@ -135,6 +135,13 @@ export const usersAPI = {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
+  uploadVerification: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post("/uploads/verification", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
 };
 
 export default api;

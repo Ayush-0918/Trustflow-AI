@@ -32,3 +32,12 @@ async def upload_project_file(file_bytes: bytes, project_id: int, filename: str)
         resource_type="auto",
     )
     return result["secure_url"]
+
+async def upload_verification_frame(file_bytes: bytes, user_id: int) -> str:
+    """Upload a deepfake verification frame and return the secure URL."""
+    result = cloudinary.uploader.upload(
+        file_bytes,
+        public_id=f"trustflow/verifications/user_{user_id}",
+        overwrite=True,
+    )
+    return result["secure_url"]
