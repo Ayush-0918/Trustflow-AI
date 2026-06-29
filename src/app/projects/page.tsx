@@ -204,7 +204,7 @@ export default function ProjectsPage() {
           
           {/* Contracts List */}
           <div className="xl:col-span-2 space-y-6">
-            {contracts.map((contract) => {
+            {contracts.map((contract: any) => {
               const styles = STATUS_STYLES[contract.status] || STATUS_STYLES.open;
               const StatusIcon = styles.iconType;
               return (
