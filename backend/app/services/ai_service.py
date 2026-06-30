@@ -236,7 +236,7 @@ def _mock_video_result(flag: str = "ai_unavailable") -> dict:
     }
 
 
-async def analyze_video_frame(frame_base64: str, session_metadata: dict | None = None) -> dict:
+async def analyze_video_frame(frame_base64: str, session_metadata: Optional[dict] = None) -> dict:
     """
     Real deepfake/liveness analysis using Groq's Vision model.
 
