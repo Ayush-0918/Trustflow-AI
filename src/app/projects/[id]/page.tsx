@@ -164,7 +164,7 @@ export default function ProjectDetailPage() {
   return (
     <AppShell>
       <WebGLBackground />
-      <div ref={container} className="p-4 md:p-8 h-full relative z-10 overflow-hidden max-w-[1600px] mx-auto flex flex-col">
+      <div ref={container} className="p-4 md:p-8 h-full relative z-10 overflow-y-auto max-w-[1600px] mx-auto flex flex-col">
         
         {/* Header */}
         <div className="flex items-center gap-3 mb-6 text-white/50 text-xs font-mono uppercase tracking-widest">
@@ -178,129 +178,171 @@ export default function ProjectDetailPage() {
             <Loader2 size={40} className="text-cyan-400 animate-spin" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-140px)]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-0 flex-1">
             
             {/* COLUMN 1: Overview */}
-            <div className="lg:col-span-3 h-full">
+            <div className="lg:col-span-4 lg:h-[calc(100vh-160px)] min-h-[400px]">
               <HoloCard className="h-full detail-card">
-                <div className="p-6 overflow-y-auto h-full custom-scrollbar">
-                  <div className="w-12 h-12 bg-cyan-500/10 border border-cyan-500/30 rounded-xl flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-                    <FolderKanban size={24} className="text-cyan-400" />
-                  </div>
-                  <h1 className="text-3xl font-display font-black text-white leading-tight mb-2 drop-shadow-md">{project?.title}</h1>
-                  <div className="flex items-center gap-2 mb-6">
-                    <span className="px-2 py-1 bg-white/5 border border-white/10 rounded font-cyber text-[9px] text-white uppercase tracking-widest shadow-inner">
-                      {project?.status}
-                    </span>
-                    {project?.budget_max && (
-                      <span className="px-2 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded font-cyber text-[9px] text-emerald-400 uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-                        ${project.budget_min} - ${project.budget_max}
+                <div className="h-full flex flex-col overflow-hidden">
+                  {/* Gradient header banner */}
+                  <div className="relative p-6 pb-4 shrink-0 border-b border-white/5" style={{background: 'linear-gradient(135deg, rgba(34,211,238,0.08) 0%, rgba(0,0,0,0) 60%)'}}>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none" />
+                    <div className="w-10 h-10 bg-cyan-500/10 border border-cyan-500/30 rounded-xl flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                      <FolderKanban size={20} className="text-cyan-400" />
+                    </div>
+                    <h1 className="text-lg font-display font-black text-white leading-snug mb-3 [overflow-wrap:anywhere]">{project?.title}</h1>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg font-cyber text-[9px] text-white uppercase tracking-widest">
+                        {project?.status}
                       </span>
-                    )}
-                  </div>
-                  
-                  <p className="text-gray-400 font-mono text-xs leading-relaxed">
-                    {project?.description || "No description provided."}
-                  </p>
-
-                  {/* Parties Involved */}
-                  <div className="mt-8 pt-6 border-t border-white/5 space-y-4">
-                    <h3 className="font-cyber text-[10px] uppercase tracking-widest text-gray-500">Nodes Involved</h3>
-                    
-                    <div className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/[0.05] rounded-xl">
-                      <div className="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/50 flex items-center justify-center text-cyan-400">
-                        <User size={14} />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-white">{project?.client?.username || "Client Node"}</p>
-                        <p className="text-[9px] font-cyber text-cyan-400 uppercase tracking-widest">Deployer</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/[0.05] rounded-xl">
-                      <div className="w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/50 flex items-center justify-center text-purple-400">
-                        <Cpu size={14} />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-white">{project?.freelancer?.username || "Awaiting Node"}</p>
-                        <p className="text-[9px] font-cyber text-purple-400 uppercase tracking-widest">Executor</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 pt-6 border-t border-white/5 space-y-4">
-                    <h3 className="font-cyber text-[10px] uppercase tracking-widest text-gray-500">Required Skills</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {project?.skills_required?.map((skill: string) => (
-                        <span key={skill} className="px-2 py-1 bg-purple-500/10 border border-purple-500/30 text-purple-400 font-mono text-[10px] rounded-full">
-                          {skill}
+                      {project?.budget_max && (
+                        <span className="px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-lg font-cyber text-[9px] text-emerald-400 uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.15)]">
+                          ${project.budget_min?.toLocaleString()} – ${project.budget_max?.toLocaleString()}
                         </span>
-                      ))}
-                      {(!project?.skills_required || project.skills_required.length === 0) && (
-                        <span className="text-xs text-gray-500 italic">None specified</span>
                       )}
                     </div>
+                  </div>
+
+                  {/* Scrollable body */}
+                  <div className="flex-1 overflow-y-auto p-6 pt-4 space-y-6 custom-scrollbar">
+                    {/* Description */}
+                    <div>
+                      <p className="text-[10px] font-cyber uppercase tracking-widest text-gray-500 mb-2">Brief</p>
+                      <p className="text-gray-300 font-mono text-xs leading-relaxed">
+                        {project?.description || "No description provided."}
+                      </p>
+                    </div>
+
+                    {/* Parties */}
+                    <div className="pt-4 border-t border-white/5">
+                      <p className="text-[10px] font-cyber uppercase tracking-widest text-gray-500 mb-3">Nodes Involved</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3 p-3 bg-cyan-500/5 border border-cyan-500/10 rounded-xl">
+                          <div className="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shrink-0">
+                            <User size={13} />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-white truncate">{project?.client?.username || "Client Node"}</p>
+                            <p className="text-[9px] font-cyber text-cyan-400 uppercase tracking-widest">Deployer</p>
+                          </div>
+                          <div className="ml-auto w-2 h-2 rounded-full bg-cyan-400 animate-pulse shrink-0" />
+                        </div>
+                        <div className="flex items-center gap-3 p-3 bg-purple-500/5 border border-purple-500/10 rounded-xl">
+                          <div className="w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 shrink-0">
+                            <Cpu size={13} />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-white truncate">{project?.freelancer?.username || "Awaiting Node"}</p>
+                            <p className="text-[9px] font-cyber text-purple-400 uppercase tracking-widest">Executor</p>
+                          </div>
+                          <div className={`ml-auto w-2 h-2 rounded-full shrink-0 ${project?.freelancer ? 'bg-emerald-400 animate-pulse' : 'bg-gray-600'}`} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Skills */}
+                    {project?.skills_required?.length > 0 && (
+                      <div className="pt-4 border-t border-white/5">
+                        <p className="text-[10px] font-cyber uppercase tracking-widest text-gray-500 mb-3">Required Skills</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {project.skills_required.map((skill: string) => (
+                            <span key={skill} className="px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono text-[10px] rounded-lg hover:bg-purple-500/20 transition-colors">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Deadline */}
+                    {project?.deadline && (
+                      <div className="pt-4 border-t border-white/5 flex items-center gap-3 p-3 bg-amber-500/5 border-amber-500/10 rounded-xl">
+                        <Clock size={14} className="text-amber-400 shrink-0" />
+                        <div>
+                          <p className="text-[9px] font-cyber text-amber-400 uppercase tracking-widest">Deadline</p>
+                          <p className="text-xs text-white font-mono mt-0.5">
+                            {new Date(project.deadline).toLocaleDateString('en-US', { day:'numeric', month:'short', year:'numeric' })}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </HoloCard>
             </div>
 
             {/* COLUMN 2: Escrow / Milestones */}
-            <div className="lg:col-span-5 h-full">
+            <div className="lg:col-span-4 lg:h-[calc(100vh-160px)] min-h-[400px]">
               <HoloCard spotlightColor="rgba(34, 211, 238, 0.1)" className="h-full detail-card">
-                <div className="p-6 h-full flex flex-col">
-                  <h2 className="font-display font-bold text-xl text-white uppercase tracking-widest flex items-center gap-3 mb-6">
-                    <ShieldCheck size={20} className="text-cyan-400" />
-                    Escrow Vault
-                  </h2>
+                <div className="p-5 h-full flex flex-col">
+                  {/* Header with progress */}
+                  <div className="flex items-center justify-between mb-1 shrink-0">
+                    <h2 className="font-display font-bold text-base text-white uppercase tracking-widest flex items-center gap-2">
+                      <ShieldCheck size={16} className="text-cyan-400" />
+                      Escrow Vault
+                    </h2>
+                    {milestones?.length > 0 && (
+                      <span className="text-[9px] font-cyber text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-lg">
+                        {milestones.filter((m: any) => m.status === 'completed').length}/{milestones.length} DONE
+                      </span>
+                    )}
+                  </div>
 
-                  <div className="flex-1 overflow-y-auto pr-4 space-y-4 custom-scrollbar">
+                  {/* Progress bar */}
+                  {milestones?.length > 0 && (
+                    <div className="mb-5 shrink-0">
+                      <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 rounded-full transition-all duration-700 shadow-[0_0_8px_rgba(34,211,238,0.6)]"
+                          style={{ width: `${(milestones.filter((m: any) => m.status === 'completed').length / milestones.length) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1">
                     {loadingMilestones ? (
                       <div className="flex justify-center p-8"><Loader2 className="animate-spin text-cyan-400" /></div>
                     ) : milestones?.length > 0 ? (
                       milestones.map((ms: any, i: number) => (
-                        <div key={ms.id} className="p-4 bg-white/[0.02] border border-white/[0.05] rounded-xl flex gap-4 group hover:bg-white/[0.04] transition-colors relative overflow-hidden shadow-lg">
-                          {ms.status === "completed" && (
-                             <div className="absolute inset-0 bg-emerald-500/5 pointer-events-none" />
-                          )}
-                          <div className="mt-1">
-                             {ms.status === "completed" ? (
-                               <div className="relative">
-                                 <div className="absolute inset-0 bg-emerald-400 blur-md opacity-50" />
-                                 <CheckCircle2 size={18} className="text-emerald-400 relative z-10" />
-                               </div>
-                             ) : ms.status === "in_progress" ? (
-                               <Activity size={18} className="text-cyan-400 animate-pulse drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]" />
-                             ) : (
-                               <div className="w-4 h-4 rounded-full border-2 border-gray-600" />
-                             )}
+                        <div key={ms.id} className={`p-4 rounded-xl flex gap-3 group transition-all relative overflow-hidden border ${
+                          ms.status === 'completed'
+                            ? 'bg-emerald-500/5 border-emerald-500/20'
+                            : ms.status === 'in_progress'
+                            ? 'bg-cyan-500/5 border-cyan-500/20'
+                            : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]'
+                        }`}>
+                          {/* Step number */}
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5 ${
+                            ms.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                            ms.status === 'in_progress' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' :
+                            'bg-white/5 text-gray-500 border border-white/10'
+                          }`}>
+                            {ms.status === 'completed' ? <CheckCircle2 size={14} /> : i + 1}
                           </div>
-                          <div className="flex-1">
-                            <h4 className="font-bold text-white text-sm">{ms.title}</h4>
-                            <p className="text-xs text-gray-500 font-mono mt-1">{ms.description || "No description."}</p>
-                            <div className="mt-4 flex items-center justify-between text-[10px] font-cyber uppercase tracking-widest">
-                              <span className="text-emerald-400 text-sm font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                                ${ms.amount > 0 ? ms.amount : Math.floor((project?.budget_max || 5000) / (milestones.length || 1))}
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-bold text-white text-sm truncate">{ms.title}</h4>
+                            <p className="text-[10px] text-gray-500 font-mono mt-0.5 line-clamp-2">{ms.description || "No description."}</p>
+                            <div className="mt-3 flex items-center justify-between gap-2">
+                              <span className="text-emerald-400 text-xs font-black bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 leading-none">
+                                ${ms.amount > 0 ? ms.amount.toLocaleString() : Math.floor((project?.budget_max || 5000) / (milestones.length || 1)).toLocaleString()}
                               </span>
-                              
-                              {/* Action Button depending on status and role */}
-                              {ms.status !== "completed" && user?.id === project?.client_id && (
-                                <button className="px-3 py-1.5 bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 rounded hover:bg-cyan-500/40 transition-colors shadow-[0_0_10px_rgba(34,211,238,0.2)]">
+                              {ms.status !== 'completed' && user?.id === project?.client_id ? (
+                                <button className="text-[9px] font-cyber uppercase tracking-widest px-3 py-1.5 leading-none bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/30 transition-all whitespace-nowrap">
                                   Release Funds
                                 </button>
-                              )}
-                              {ms.status === "completed" && (
-                                <span className="text-emerald-500 flex items-center gap-1"><CheckCircle2 size={12} /> Released</span>
-                              )}
+                              ) : ms.status === 'completed' ? (
+                                <span className="text-[9px] font-cyber text-emerald-400 flex items-center gap-1 uppercase tracking-widest"><CheckCircle2 size={10} /> Released</span>
+                              ) : null}
                             </div>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <div className="text-center p-10 border border-dashed border-white/10 rounded-2xl relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.02)_50%,transparent_75%,transparent_100%)] bg-[length:250%_250%,100%_100%] group-hover:animate-[gradient_3s_linear_infinite]" />
-                        <ShieldCheck size={32} className="text-gray-600 mx-auto mb-3" />
-                        <p className="text-gray-500 font-mono text-sm">Vault empty. Awaiting cryptographic milestone deployment.</p>
+                      <div className="text-center p-10 border border-dashed border-white/10 rounded-2xl">
+                        <ShieldCheck size={28} className="text-gray-700 mx-auto mb-3" />
+                        <p className="text-gray-600 font-mono text-xs">Vault empty.</p>
+                        <p className="text-gray-700 font-mono text-[10px] mt-1">Awaiting milestone deployment.</p>
                       </div>
                     )}
                   </div>
@@ -309,7 +351,7 @@ export default function ProjectDetailPage() {
             </div>
 
             {/* COLUMN 3: Secure Chat */}
-            <div className="lg:col-span-4 h-full">
+            <div className="lg:col-span-4 lg:h-[calc(100vh-160px)] min-h-[500px]">
               <HoloCard className="h-full detail-card">
                 <div className="p-4 border-b border-white/5 bg-white/[0.02] flex items-center justify-between shrink-0 shadow-md">
                    <h2 className="font-cyber font-bold text-[11px] text-white uppercase tracking-widest flex items-center gap-2">

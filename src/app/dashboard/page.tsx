@@ -210,10 +210,10 @@ export default function DashboardPage() {
           </div>
 
           {/* Primary Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Trust Score Gauge Card */}
-            <div className="stagger-item h-full" style={{ perspective: "1500px" }}>
+            <div className="stagger-item md:col-span-1 h-full" style={{ perspective: "1500px" }}>
               <HoloCard spotlightColor="rgba(34, 211, 238, 0.15)" className="h-full flex flex-col items-center justify-center">
                 <TrustScoreGauge score={trust?.overall_score ?? user?.trust_score ?? 50} size={180} strokeWidth={10} />
                 <div className="mt-8 text-center" style={{ transform: "translateZ(40px)" }}>
@@ -230,12 +230,12 @@ export default function DashboardPage() {
             </div>
 
             {/* Revenue Area Chart */}
-            <div className="stagger-item md:col-span-2 xl:col-span-2 h-full" style={{ perspective: "1500px" }}>
+            <div className="stagger-item md:col-span-2 h-full" style={{ perspective: "1500px" }}>
               <HoloCard spotlightColor="rgba(168, 85, 247, 0.1)" className="h-full flex flex-col">
                 <div className="mb-2" style={{ transform: "translateZ(20px)" }}>
                   <h3 className="font-cyber font-bold tracking-widest uppercase text-gray-400 text-xs">Capital Flow</h3>
                 </div>
-                <div className="flex-1 -mx-4 -mb-4">
+                <div className="flex-1 -mx-4 -mb-4 min-h-[240px]">
                   <AreaChartGradient 
                     data={revenueData} 
                     title=""
