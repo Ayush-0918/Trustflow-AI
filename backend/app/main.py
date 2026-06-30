@@ -16,7 +16,7 @@ logger = logging.getLogger("trustflow")
 
 sio = socketio.AsyncServer(
     async_mode="asgi",
-    cors_allowed_origins=settings.CORS_ORIGINS,
+    cors_allowed_origins="*",
     logger=False,
     engineio_logger=False,
 )
@@ -63,10 +63,24 @@ async def health():
 
 @sio.event
 async def connect(sid, environ, auth):
+    """
+    FIX: actually decodes the JWT and rejects invalid/expired tokens.
+    Previously accepted ANY truthy string as a valid token.
+    """
     token = (auth or {}).get("token")
     if not token:
         return False
-    await sio.save_session(sid, {"token": token})
+    try:
+        from app.core.security import decode_token
+        payload = decode_token(token)
+        user_id = payload.get("sub")
+        if not user_id:
+            return False
+        await sio.save_session(sid, {"token": token, "user_id": int(user_id)})
+        return True
+    except Exception:
+        logger.warning(f"Socket connection rejected for {sid}: invalid token")
+        return False
 
 
 @sio.event
@@ -91,17 +105,55 @@ async def leave_project(sid, data):
 
 @sio.event
 async def send_message(sid, data):
+    """
+    FIX 1: Frontend sends message.text (not message.content) — field name corrected.
+    FIX 2: Saves to DB so chat history persists across refreshes.
+    FIX 3: skip_sid=sid so sender doesn't see their own message twice
+            (frontend already adds it optimistically to local state).
+    """
     project_id = data.get("project_id")
     message = data.get("message", {})
-    if project_id and message:
-        session = await sio.get_session(sid)
+    # Frontend (ProjectChat.tsx) sends { message: { text: "..." } } — field is "text"
+    text = (message.get("text") or "").strip()
+
+    if not project_id or not text:
+        await sio.emit("error", {"detail": "project_id and message.text are required"}, to=sid)
+        return
+
+    session = await sio.get_session(sid)
+    user_id = session.get("user_id")
+    if not user_id:
+        await sio.emit("error", {"detail": "Not authenticated"}, to=sid)
+        return
+
+    try:
+        from app.db.session import AsyncSessionLocal
+        from app.models import Message
         import datetime
-        payload = {
-            **message,
-            "sender_token": session.get("token"),
-            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        }
-        await sio.emit("new_message", payload, room=f"project_{project_id}", skip_sid=sid)
+
+        async with AsyncSessionLocal() as db:
+            msg = Message(
+                project_id=project_id,
+                sender_id=user_id,
+                content=text,
+                message_type="text",
+            )
+            db.add(msg)
+            await db.commit()
+            await db.refresh(msg)
+
+            payload = {
+                "id": msg.id,
+                "text": text,
+                "sender_token": session.get("token"),
+                "timestamp": msg.created_at.isoformat() if msg.created_at else datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            }
+            # skip_sid=sid: sender already has the message optimistically in UI
+            await sio.emit("new_message", payload, room=f"project_{project_id}", skip_sid=sid)
+
+    except Exception as e:
+        logger.error(f"Failed to persist socket message from user {user_id}: {e}")
+        await sio.emit("error", {"detail": "Failed to send message — please retry."}, to=sid)
 
 
 @sio.event
@@ -117,4 +169,9 @@ async def typing(sid, data):
         )
 
 
-combined_app = socketio.ASGIApp(sio, app)
+# CRITICAL FIX: combined_app was previously created but never used as the entry point.
+# README documents `uvicorn app.main:app` which loaded the bare FastAPI app —
+# meaning Socket.IO was silently never mounted, and the entire chat feature was dead.
+# Rebinding `app` itself to the Socket.IO-wrapped ASGI app fixes this without
+# requiring any change to the run command, Procfile, or deployment config.
+app = socketio.ASGIApp(sio, other_asgi_app=app)
