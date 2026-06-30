@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
-import { aiAPI } from "@/lib/api";
+import { usersAPI } from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
 import {
   Video, VideoOff, Shield, CheckCircle2,
@@ -89,22 +89,19 @@ export default function VideoVerifyPage() {
       setCountdown(0);
 
       // Convert Canvas to Blob
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg'));
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.85));
       if (!blob) throw new Error("Could not capture image");
       
       const file = new File([blob], 'verification.jpg', { type: 'image/jpeg' });
       
-      // Upload to Cloudinary via Backend
-      const { usersAPI } = await import("@/lib/api");
+      // Upload frame to backend — backend runs real Groq Vision analysis and returns result
       const uploadRes = await usersAPI.uploadVerification(file);
-      
-      // Perform AI Analysis (mocked for demo purposes alongside the real upload)
-      const res = await aiAPI.analyzeVideo(
-        `User is performing a live identity verification. Uploaded securely to: ${uploadRes.data.file_url}`
-      );
-      setResult(res.data);
+      const { analysis, verified } = uploadRes.data;
 
-      if (res.data.is_authentic && res.data.liveness_score > 0.7) {
+      // Use the backend's real AI analysis result directly
+      setResult(analysis);
+
+      if (verified) {
         updateUser({ identity_verified: true });
         toast.success("Identity cryptographically verified successfully!");
       }
